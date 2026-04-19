@@ -32,6 +32,26 @@
     color: var(--color-m-ink);
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
+
+  button, a {
+    cursor: pointer;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-m-ink);
+  }
+
+  /* Utility to force white text inside colored components regardless of theme */
+  .force-white-text h1,
+  .force-white-text h2,
+  .force-white-text h3,
+  .force-white-text h4,
+  .force-white-text h5,
+  .force-white-text h6,
+  .force-white-text p,
+  .force-white-text span {
+    color: #ffffff !important;
+  }
 }
 
 @theme {
