@@ -1,10 +1,18 @@
+import { motion } from "motion/react";
 import { Clock, MapPin, MessageCircle, Mail } from "lucide-react";
+import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 
 export function ContactSection() {
   return (
-    <div className="px-[5%] mt-20 mb-20">
+    <div className="px-[5%] mt-20 mb-20 overflow-hidden">
       {/* Section Header */}
-      <div className="text-center mb-12">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInUp}
+        className="text-center mb-12"
+      >
         <span className="text-m-red font-bold text-[13px] uppercase tracking-widest mb-3 block">
           Find Us
         </span>
@@ -12,11 +20,20 @@ export function ContactSection() {
         <p className="text-m-ink-muted text-[16px] max-w-md mx-auto">
           Visit our store or reach out — we're here to help every day.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
+      >
         {/* Map */}
-        <div className="rounded-[24px] overflow-hidden shadow-lg border border-m-border min-h-[420px]">
+        <motion.div 
+          variants={fadeInUp}
+          className="rounded-[24px] overflow-hidden shadow-lg border border-m-border min-h-[420px]"
+        >
           <iframe
             title="Store Location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d517.6648579746352!2d-4.832447379084203!3d33.826847775629616!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9b3d5d6dd7ad%3A0xcd974fd2eb8032ee!2sData%20Management!5e1!3m2!1sde!2sma!4v1776523682550!5m2!1sde!2sma"
@@ -27,10 +44,13 @@ export function ContactSection() {
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
-        </div>
+        </motion.div>
 
         {/* Contact Info */}
-        <div className="bg-m-card rounded-[24px] border border-m-border p-10 flex flex-col justify-center shadow-sm">
+        <motion.div 
+          variants={fadeInUp}
+          className="bg-m-card rounded-[24px] border border-m-border p-10 flex flex-col justify-center shadow-sm"
+        >
           <h3 className="text-[26px] font-bold text-m-ink mb-2">Get in Touch</h3>
           <p className="text-m-ink-muted text-[15px] mb-8">
             Come visit us in-store or send us a message on WhatsApp — we're happy to assist.
@@ -92,8 +112,8 @@ export function ContactSection() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

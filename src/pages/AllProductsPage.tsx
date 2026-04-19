@@ -1,10 +1,12 @@
 import React from "react";
-import { ShoppingCart } from "lucide-react";
+import { motion } from "motion/react";
+import { ShoppingCart, Search, ArrowLeft } from "lucide-react";
 import { PRODUCTS, CATEGORIES } from "../data";
+import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
 
 export function AllProductsPage({
   categoryFilter,
-  searchQuery,
+  searchQuery: externalSearchQuery,
   currentPage,
   onCategoryChange,
   onPageChange,
@@ -25,8 +27,8 @@ export function AllProductsPage({
   if (categoryFilter !== 'All') {
     filtered = filtered.filter(p => p.category === categoryFilter);
   }
-  if (searchQuery) {
-    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  if (externalSearchQuery) {
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(externalSearchQuery.toLowerCase()));
   }
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
@@ -52,121 +54,145 @@ export function AllProductsPage({
   };
 
   return (
-    <div className="px-[5%] py-16 animation-fade-in">
-        {/* Categories Filter */}
-        <div className="flex flex-wrap gap-3 mb-12 justify-center">
-            {CATEGORIES.map((cat) => (
-                <button
-                key={cat}
-                onClick={() => onCategoryChange(cat)}
-                className={`px-6 py-2 rounded-full font-bold text-[14px] transition-all shadow-sm ${
-                    categoryFilter === cat
-                    ? "bg-m-ink text-m-card shadow-md scale-105"
-                    : "bg-m-card text-m-ink border border-m-border hover:border-m-ink"
-                }`}
-                >
-                {cat}
-                </button>
-            ))}
-        </div>
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      className="px-[5%] py-12 min-h-screen bg-m-bg"
+    >
+      <div className="max-w-[1400px] mx-auto">
+        {/* Categories Navigation (Horizontal Pills - Old Design Reverted) */}
+        <motion.div 
+          variants={fadeInUp}
+          className="flex flex-wrap items-center justify-center gap-3 mb-16 overflow-x-auto pb-4 no-scrollbar"
+        >
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => onCategoryChange(cat)}
+              className={`px-8 py-2.5 rounded-full font-bold text-[14px] transition-all whitespace-nowrap border-2 ${
+                categoryFilter === cat
+                  ? "bg-m-ink text-m-card border-m-ink shadow-lg shadow-m-ink/10"
+                  : "bg-m-card text-m-ink-muted border-m-border hover:bg-m-bg hover:text-m-ink hover:border-m-ink/30"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[20px]">
-             {currentProducts.map((product: any) => (
-                <div
-                    key={product.id}
-                    onClick={() => onProductClick(product.id)}
-                    className="group cursor-pointer flex flex-col bg-m-card rounded-[16px] border border-m-border overflow-hidden hover:shadow-xl transition-all duration-300 relative"
-                >
-                    {product.badge && (
-                    <span className="absolute top-[15px] left-[15px] z-10 bg-m-red text-white px-[10px] py-[4px] rounded-full text-[10px] font-bold tracking-wider uppercase tracking-tight shadow-sm">
+        {/* Product Grid - Full Width */}
+        <div className="w-full">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            key={categoryFilter + externalSearchQuery} // Reset animation on filter change
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-12"
+          >
+            {currentProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={fadeInUp}
+                onClick={() => onProductClick(product.id.toString())}
+                className="group bg-m-card border border-m-border rounded-[24px] overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300"
+              >
+                <div className="aspect-square bg-m-bg relative overflow-hidden flex items-center justify-center p-3">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                  />
+                  {product.badge && (
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-m-red text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter shadow-sm">
                         {product.badge}
-                    </span>
-                    )}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Add to Cart Overlay */}
+                  <div className="absolute inset-0 bg-m-ink/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                    <button 
+                      onClick={(e) => onAddToCart(product, e)}
+                      className="bg-white text-black p-4 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
+                    >
+                      <ShoppingCart className="h-6 w-6" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-2 md:p-4 flex flex-col flex-grow">
+                  <span className="text-[12px] text-m-ink-muted font-medium mb-1 uppercase tracking-wider">{product.category}</span>
+                  <h3 className="font-bold text-[14px] md:text-[18px] text-m-ink leading-tight mb-2 group-hover:text-m-red transition-colors">{product.name}</h3>
+                  
+                  <div className="mt-auto">
+                    <div className="flex items-baseline gap-2 mb-4">
+                      <span className="font-black text-[18px] md:text-[22px] text-m-red/80">{product.price}</span>
+                      {product.oldPrice && (
+                        <span className="text-m-ink-muted text-[14px] line-through">{product.oldPrice}</span>
+                      )}
+                    </div>
                     
-                    <div className="relative h-[220px] bg-m-border/30 p-[20px] flex items-center justify-center overflow-hidden">
-                        <img
-                        src={product.image}
-                        alt={product.name}
-                        className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md mix-blend-multiply dark:mix-blend-normal"
-                        />
-                        
-                        <div className="absolute inset-0 bg-m-ink/5 dark:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                        <button 
-                            onClick={(e) => onAddToCart(product, e)}
-                            className="bg-m-ink text-m-card rounded-full p-3 shadow-lg hover:bg-m-red hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300"
-                        >
-                            <ShoppingCart className="h-5 w-5" />
-                        </button>
-                        </div>
-                    </div>
-
-                    <div className="p-[20px] flex flex-col flex-grow">
-                    <div className="text-[12px] text-m-ink-muted font-medium mb-1 uppercase tracking-wider">
-                        {product.category}
-                    </div>
-                    <h3 className="font-bold text-[16px] text-m-ink leading-[1.3] mb-2 transition-colors line-clamp-2">
-                        {product.name}
-                    </h3>
-
-                    <div className="mt-auto">
-                        <div className="flex items-end justify-between">
-                        <div className="font-bold text-[20px] text-m-red">
-                            {product.price}
-                        </div>
-                        {product.oldPrice && (
-                            <div className="text-[12px] text-m-ink-muted line-through mb-1">
-                            {product.oldPrice}
-                            </div>
-                        )}
-                        </div>
-                        
-                        <button 
-                         onClick={(e) => handleBuyNow(e, product)}
-                         className="w-full mt-4 bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
-                        >
-                        BUY NOW
-                        </button>
-                    </div>
-                    </div>
+                    <button 
+                      onClick={(e) => handleBuyNow(e, product)}
+                      className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 md:py-3 rounded-xl font-bold text-[13px] transition-all transform active:scale-95"
+                    >
+                      BUY NOW
+                    </button>
+                  </div>
                 </div>
+              </motion.div>
             ))}
-        </div>
+          </motion.div>
 
-        {currentProducts.length === 0 ? (
-            <div className="text-center py-20 text-m-ink-muted">
-                <p className="text-[18px] font-medium">No products found for this category/search.</p>
-            </div>
-        ) : (
-            totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-16 font-medium">
-                    <button 
-                        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-                        disabled={currentPage === 1}
-                        className="px-4 py-2 border border-m-border rounded-lg disabled:opacity-50 hover:bg-m-border transition-colors bg-m-card"
-                    >
-                        &lt; Prev
-                    </button>
-                    <div className="flex gap-2">
-                        {Array.from({ length: totalPages }).map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => onPageChange(idx + 1)}
-                                className={`w-10 h-10 rounded-lg transition-colors border ${currentPage === idx + 1 ? 'bg-m-ink text-m-card border-m-ink' : 'bg-m-card border-m-border hover:bg-m-border'}`}
-                            >
-                                {idx + 1}
-                            </button>
-                        ))}
-                    </div>
-                    <button 
-                        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-                        disabled={currentPage === totalPages}
-                        className="px-4 py-2 border border-m-border rounded-lg disabled:opacity-50 hover:bg-m-border transition-colors bg-m-card"
-                    >
-                        Next &gt;
-                    </button>
-                </div>
-            )
-        )}
-    </div>
+          {currentProducts.length === 0 && (
+            <motion.div 
+              variants={fadeIn}
+              className="text-center py-24 bg-m-card border border-m-border rounded-[24px]"
+            >
+              <div className="bg-m-bg w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <Search className="h-8 w-8 text-m-ink-muted" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">No products found</h3>
+              <p className="text-m-ink-muted">Try adjusting your filters or search query.</p>
+            </motion.div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <motion.div 
+              variants={fadeIn}
+              className="flex justify-center items-center gap-2 mt-16 font-medium"
+            >
+              <button 
+                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border border-m-border rounded-lg disabled:opacity-50 hover:bg-m-border transition-colors bg-m-card"
+              >
+                &lt; Prev
+              </button>
+              <div className="flex gap-2">
+                {Array.from({ length: totalPages }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => onPageChange(idx + 1)}
+                    className={`w-10 h-10 rounded-lg transition-colors border ${currentPage === idx + 1 ? 'bg-m-ink text-m-card border-m-ink' : 'bg-m-card border-m-border hover:bg-m-border'}`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+              </div>
+              <button 
+                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border border-m-border rounded-lg disabled:opacity-50 hover:bg-m-border transition-colors bg-m-card"
+              >
+                Next &gt;
+              </button>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 }

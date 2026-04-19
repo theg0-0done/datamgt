@@ -278,7 +278,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-[#1a1a1a]",
     textColor: "text-white",
     image: "/assets/headphones.png",
-    colSpan: "col-span-1"
+    colSpan: "col-span-4 md:col-span-2 lg:col-span-1"
   },
   {
     id: 2,
@@ -289,7 +289,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-m-yellow",
     textColor: "text-white",
     image: "/assets/smartwatch.png",
-    colSpan: "col-span-1"
+    colSpan: "col-span-4 md:col-span-2 lg:col-span-1"
   },
   {
     id: 3,
@@ -300,7 +300,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-m-red",
     textColor: "text-white",
     image: "/assets/laptop.png",
-    colSpan: "col-span-1 sm:col-span-2"
+    colSpan: "col-span-4 lg:col-span-2"
   },
   {
     id: 4,
@@ -311,7 +311,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-[#ebebeb]",
     textColor: "text-[#1a1a1a]",
     image: "/assets/laptop.png",
-    colSpan: "col-span-1 sm:col-span-2"
+    colSpan: "col-span-4 lg:col-span-2"
   },
   {
     id: 5,
@@ -322,7 +322,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-m-green",
     textColor: "text-white",
     image: "/assets/tv-screen.png",
-    colSpan: "col-span-1"
+    colSpan: "col-span-4 md:col-span-2 lg:col-span-1"
   },
   {
     id: 6,
@@ -333,7 +333,7 @@ export const BENTO_CATEGORIES = [
     color: "bg-m-blue",
     textColor: "text-white",
     image: "/assets/lgb-speaker.png",
-    colSpan: "col-span-1"
+    colSpan: "col-span-4 md:col-span-2 lg:col-span-1"
   }
 ];
 

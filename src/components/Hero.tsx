@@ -1,23 +1,39 @@
+import { motion } from "motion/react";
+import { fadeInUp, RevealText } from "../utils/animationUtils";
+
 export function Hero() {
   return (
-    <div id="home" className="px-[5%] mt-6 scroll-mt-[100px]">
-      <div className="bg-m-red rounded-[24px] shadow-[0_10px_30px_rgba(193,39,45,0.2)] relative min-h-[450px] flex items-center">
+    <motion.div 
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      id="home" 
+      className="px-[5%] mt-6 scroll-mt-[100px]"
+    >
+      <div className="relative w-full bg-m-red rounded-[24px] shadow-[0_10px_30px_rgba(193,39,45,0.2)] relative min-h-[450px] flex items-center">
         <div className="relative w-full">
-          <div className="p-[50px] flex flex-col justify-center z-10 text-white force-white-text">
-            <span className="bg-m-yellow text-[#1a1a1a] px-[8px] py-[2px] rounded-[4px] uppercase font-bold text-[10px] w-fit mb-[15px]">
+          <div className="p-6 md:p-[50px] flex flex-col justify-center z-10 text-white force-white-text">
+            <motion.span 
+              variants={fadeInUp}
+              className="bg-m-yellow text-[#1a1a1a] px-[8px] py-[2px] rounded-[4px] uppercase font-bold text-[10px] w-fit mb-[15px]"
+            >
               Flash Offer - 40% OFF
-            </span>
-            <h1 className="font-bold text-[64px] tracking-tight leading-[0.9] mb-[15px]">
-              Wireless
-              <br />
-              Headphone
-            </h1>
-            <p className="opacity-90 text-[18px] mb-[25px]">
+            </motion.span>
+            
+            <RevealText 
+              text="Wireless Headphone" 
+              className="font-black text-[64px] tracking-tight leading-[0.9] mb-[15px]" 
+            />
+
+            <motion.p 
+              variants={fadeInUp}
+              className="opacity-90 text-[18px] mb-[25px]"
+            >
               Premium sound for the modern gamer.
               <br />
-              Limited Edition Casablanca Red.
-            </p>
-            <div>
+              Limited Edition Sefrou Red.
+            </motion.p>
+            <motion.div variants={fadeInUp}>
               <button
                 onClick={() => {
                   const text = encodeURIComponent(
@@ -32,15 +48,19 @@ export function Hero() {
               >
                 SHOP NOW
               </button>
-            </div>
+            </motion.div>
           </div>
-          <img
+          <motion.img
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
             src="/assets/headphones.png"
             alt="Wireless Headphones"
-            className="absolute right-[60px] top-[50%] translate-y-[-50%] object-contain max-w-[80%] lg:max-w-[500px] z-10 drop-shadow-xl"
+            className="md:absolute md:right-0 lg:right-[60px] md:top-[50%] md:translate-y-[-50%] object-contain w-full md:max-w-[60%] lg:max-w-[500px] z-10 drop-shadow-xl"
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

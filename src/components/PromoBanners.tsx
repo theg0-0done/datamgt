@@ -1,10 +1,22 @@
+import { motion } from "motion/react";
+import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+
 export function PromoBanners() {
   return (
     <div className="px-[5%] mt-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        className="flex flex-col lg:flex-row gap-6"
+      >
 
         {/* Red Banner - Headphones */}
-        <div className="bg-m-red rounded-[24px] flex items-center justify-between overflow-visible shadow-[0_10px_30px_rgba(193,39,45,0.2)] relative min-h-[260px]">
+        <motion.div 
+          variants={fadeInUp}
+          className="w-full bg-m-red rounded-[24px] flex items-center justify-between overflow-visible shadow-[0_10px_30px_rgba(193,39,45,0.2)] relative min-h-[260px]"
+        >
           {/* Text */}
           <div className="p-8 flex flex-col justify-center text-white z-10 flex-shrink-0 max-w-[55%] force-white-text">
             <span className="text-[11px] font-bold opacity-70 uppercase tracking-widest mb-3 block">
@@ -27,25 +39,31 @@ export function PromoBanners() {
             </button>
           </div>
 
-          {/* Overflowing image - centered vertically, slightly overflowing top/bottom */}
+          {/* Overflowing image */}
           <div className="absolute right-0 bottom-0 top-0 flex items-center pr-4 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
-            <img
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0, x: 20 }}
+              whileInView={{ scale: 1.1, opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               src="/assets/headphones.png"
               alt="Wireless Headphones"
-              className="w-[190px] md:w-[280px] object-contain drop-shadow-2xl translate-y-[-10px] scale-110 hover:scale-125 transition-transform duration-500"
+              className="w-[220px] md:w-[280px] object-contain drop-shadow-2xl md:translate-x-[-40px] lg:translate-x-[-0px] lg:translate-x-[-0px] hover:scale-125 transition-transform duration-500"
               style={{ pointerEvents: "none" }}
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Green Banner - Smartwatch */}
-        <div className="bg-[#2dcc70] rounded-[24px] flex items-center justify-between overflow-visible shadow-[0_10px_30px_rgba(45,204,112,0.2)] relative min-h-[260px]">
+        <motion.div 
+          variants={fadeInUp}
+          className="w-full bg-[#2dcc70] rounded-[24px] flex items-center justify-between overflow-visible shadow-[0_10px_30px_rgba(45,204,112,0.2)] relative min-h-[260px]"
+        >
           {/* Text */}
           <div className="p-8 flex flex-col justify-center text-white z-10 flex-shrink-0 max-w-[55%]">
             <span className="text-[11px] font-bold opacity-70 uppercase tracking-widest mb-3 block">
               Summer Sale
             </span>
-            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white">
+            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white w-full">
               Smart<br />Watches
             </h2>
             <p className="text-white/70 text-[13px] mb-5">
@@ -64,16 +82,19 @@ export function PromoBanners() {
 
           {/* Overflowing image */}
           <div className="absolute right-0 bottom-0 top-0 flex items-center pr-4 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
-            <img
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0, x: 20 }}
+              whileInView={{ scale: 1.1, opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
               src="/assets/smartwatch.png"
               alt="Smartwatch"
-              className="w-[180px] md:w-[280px] object-contain drop-shadow-2xl translate-y-[-10px] scale-110 hover:scale-125 transition-transform duration-500"
+              className="w-[220px] md:w-[280px] object-contain drop-shadow-2xl md:translate-x-[-40px] lg:translate-x-[-0px] hover:scale-125 transition-transform duration-500"
               style={{ pointerEvents: "none" }}
             />
           </div>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </div>
   );
 }

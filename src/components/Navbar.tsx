@@ -37,7 +37,7 @@ export function Navbar({
   return (
     <nav className="sticky top-0 z-50 bg-m-card border-b-2 border-m-border">
       <div className="px-[5%]">
-        <div className="flex justify-between h-[70px] items-center">
+        <div className="flex justify-between py-4 items-center">
           <div
             onClick={() => onNavigate("/")}
             className="flex-shrink-0 flex items-center gap-[8px] cursor-pointer"
@@ -45,11 +45,11 @@ export function Navbar({
             <img
               src="/assets/logo.png"
               alt="Data Management Logo"
-              className="h-[40px] w-auto object-contain"
+              className="h-[30px] md:h-[40px] w-auto object-contain"
             />
           </div>
 
-          <div className="hidden md:flex space-x-[30px] text-[14px] font-bold uppercase relative">
+          <div className="hidden lg:flex space-x-[30px] text-[14px] font-bold uppercase relative">
             <button
               onClick={() => onNavigate("/")}
               className="opacity-80 hover:opacity-100 transition-colors"
@@ -76,7 +76,7 @@ export function Navbar({
             </button>
           </div>
 
-          <div className="hidden md:flex items-center space-x-[20px] font-bold text-[14px]">
+          <div className="hidden lg:flex items-center space-x-[20px] font-bold text-[14px]">
             <div className="relative flex items-center bg-m-border rounded-full px-3 py-1.5 focus-within:ring-2 focus-within:ring-m-red transition-all shadow-inner">
               <Search className="h-4 w-4 text-m-ink-muted mr-2" />
               <input
@@ -110,7 +110,7 @@ export function Navbar({
             </button>
           </div>
 
-          <div className="flex md:hidden items-center gap-4">
+          <div className="flex lg:hidden items-center gap-4">
             <button
               onClick={toggleTheme}
               className="text-m-ink p-2 rounded-full bg-m-border"

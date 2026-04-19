@@ -1,54 +1,88 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+
+const FAQS = [
+  {
+    question: "Do you offer genuine products?",
+    answer: "Yes, every single product in our catalog is 100% authentic and sourced directly from authorized manufacturers or distributors. We take quality and authenticity extremely seriously."
+  },
+  {
+    question: "How long does delivery take?",
+    answer: "We offer express 48-hour delivery for major cities. For remote areas, delivery typically takes between 3 to 5 business days. You'll receive a tracking number once your order is dispatched."
+  },
+  {
+    question: "What is your return policy?",
+    answer: "We offer a 14-day hassle-free return policy for any manufacturing defects or if the product arrives damaged. The item must be in its original packaging and condition."
+  },
+  {
+    question: "Is there a warranty on electronics?",
+    answer: "Absolutely. All electronic products come with a standard 12-month manufacturer warranty. Some premium brands offer extended warranties which will be specified on the product page."
+  }
+];
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const faqs = [
-    {
-      question: "How long does shipping take?",
-      answer: "Standard shipping takes 3-5 business days. Express shipping is available for 1-2 day delivery.",
-    },
-    {
-      question: "What is your return policy?",
-      answer: "We offer a 30-day money-back guarantee. If you're not satisfied, simply return the product in its original condition.",
-    },
-    {
-      question: "Do you offer international shipping?",
-      answer: "Yes, we ship globally! International shipping times vary depending on the destination (usually 7-14 days).",
-    },
-  ];
-
   return (
-    <div id="faq" className="max-w-3xl mx-auto px-[5%] mt-24 mb-16 scroll-mt-[100px]">
-      <h2 className="text-[32px] font-bold text-center mb-8">Frequently Asked Questions</h2>
-      <div className="flex flex-col gap-4">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="bg-m-card border border-m-border rounded-[16px] overflow-hidden transition-all duration-300"
-          >
-            <button
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-m-card-hover transition-colors"
+    <section className="px-[5%] py-24 bg-m-bg overflow-hidden">
+      <div className="max-w-3xl mx-auto">
+        <motion.div 
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-[32px] md:text-[42px] font-black text-m-ink mb-4">FAQ</h2>
+          <div className="w-16 h-1.5 bg-m-red mx-auto rounded-full"></div>
+        </motion.div>
+
+        <motion.div 
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="space-y-4"
+        >
+          {FAQS.map((faq, index) => (
+            <motion.div 
+              key={index}
+              variants={fadeInUp}
+              className="bg-m-card border border-m-border rounded-2xl overflow-hidden shadow-sm"
             >
-              <span className="font-bold text-[16px]">{faq.question}</span>
-              {openIndex === index ? (
-                <ChevronUp className="h-5 w-5 text-m-red" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-m-ink-muted" />
-              )}
-            </button>
-            <div
-              className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
-                openIndex === index ? "max-h-40 py-4 border-t border-m-border opacity-100" : "max-h-0 opacity-0"
-              }`}
-            >
-              <p className="text-m-ink-muted text-[14px] leading-relaxed">{faq.answer}</p>
-            </div>
-          </div>
-        ))}
+              <button
+                onClick={() => setOpenIndex(index === openIndex ? null : index)}
+                className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-m-bg/50 transition-colors"
+                id={`faq-btn-${index}`}
+              >
+                <span className="font-bold text-[16px] md:text-[18px] text-m-ink">{faq.question}</span>
+                {openIndex === index ? (
+                  <ChevronUp className="h-5 w-5 text-m-red" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-m-ink-muted" />
+                )}
+              </button>
+              
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <div className="px-8 pb-6 text-m-ink-muted leading-relaxed text-[15px] md:text-[16px] border-t border-m-border/50 pt-4">
+                      {faq.answer}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 }
