@@ -25,10 +25,9 @@ export function CartMenu({
     let message = "Hello! I would like to checkout the following items:\n\n";
     cart.forEach(item => {
         message += `- ${item.name} (x${item.quantity}) - ${item.price}\n`;
-        message += `  Image: ${window.location.origin}${item.image}\n\n`;
     });
     
-    message += `*Total: $${calculateTotal()}*`;
+    message += `\n*Total Order: $${calculateTotal()}*`;
     
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/212762895481?text=${encodedMessage}`, '_blank');

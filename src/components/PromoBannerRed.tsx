@@ -16,7 +16,7 @@ export function PromoBannerRed() {
           </p>
           <button
             onClick={() => {
-              const text = encodeURIComponent(`Hello, I'm interested in the 20% OFF ALL LAPTOPS offer.`);
+              const text = encodeURIComponent(`Hello! I'm interested in the *Smile Everyday* Laptop offer.\nOffer: 20% OFF\nQuantity: 1\n*Total: (Sale Price)*`);
               window.open(`https://wa.me/212762895481?text=${text}`, '_blank');
             }}
             className="bg-white hover:bg-gray-100 text-m-red px-8 py-3 rounded-full font-bold text-[14px] w-fit shadow-md transition-transform hover:scale-105"
@@ -30,7 +30,7 @@ export function PromoBannerRed() {
              SALE
            </div>
           <img
-            src="/src/assets/laptop.png"
+            src="/assets/laptop.png"
             alt="Promotion Laptop"
             className="object-contain h-64 md:h-[120%] lg:h-[140%] z-10 hover:scale-110 transition-transform duration-700 drop-shadow-2xl"
           />

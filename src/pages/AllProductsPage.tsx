@@ -35,9 +35,18 @@ export function AllProductsPage({
 
   const handleBuyNow = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    const imageUrl = window.location.origin + product.image;
+    
+    const priceValue = parseFloat(product.price.replace(/[^\d.]/g, ''));
+    
+    let offerInfo = "";
+    if (product.oldPrice) {
+      const oldPriceValue = parseFloat(product.oldPrice.replace(/[^\d.]/g, ''));
+      const discountPercent = ((1 - (priceValue / oldPriceValue)) * 100).toFixed(0);
+      offerInfo = `\nSpecial Offer: ${product.badge || 'Sale'} (${discountPercent}% OFF)`;
+    }
+
     const text = encodeURIComponent(
-      `Hello! I'm interested in buying:\n\n*${product.name}*\nPrice: ${product.price}\nImage ID: ${imageUrl}`
+      `Hello! I'd like to order:\n\n*${product.name}*${offerInfo}\nPrice: ${product.price}\nQuantity: 1\n*Total: ${product.price}*`
     );
     window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
   };
@@ -95,7 +104,7 @@ export function AllProductsPage({
                     <div className="text-[12px] text-m-ink-muted font-medium mb-1 uppercase tracking-wider">
                         {product.category}
                     </div>
-                    <h3 className="font-bold text-[16px] text-m-ink leading-[1.3] mb-2 group-hover:text-m-red transition-colors line-clamp-2">
+                    <h3 className="font-bold text-[16px] text-m-ink leading-[1.3] mb-2 transition-colors line-clamp-2">
                         {product.name}
                     </h3>
 

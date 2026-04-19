@@ -18,8 +18,7 @@ export function PromoBanners() {
             </p>
             <button
               onClick={() => {
-                const imageUrl = window.location.origin + "/src/assets/headphones.png";
-                const text = encodeURIComponent(`Hello, I'm interested in the Wireless Headphones flash offer!\n\nImage: ${imageUrl}`);
+                const text = encodeURIComponent(`Hello! I'm interested in the *Wireless Headphones* flash offer!\nOffer: 40% OFF\nQuantity: 1\n*Total: (Flash Offer Price)*`);
                 window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
               }}
               className="bg-white hover:bg-gray-100 text-m-red px-6 py-2.5 rounded-full font-bold text-[13px] w-fit shadow-md transition-transform hover:scale-105 active:scale-95"
@@ -31,7 +30,7 @@ export function PromoBanners() {
           {/* Overflowing image - centered vertically, slightly overflowing top/bottom */}
           <div className="absolute right-0 bottom-0 top-0 flex items-center pr-4 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
             <img
-              src="/src/assets/headphones.png"
+              src="/assets/headphones.png"
               alt="Wireless Headphones"
               className="w-[190px] md:w-[280px] object-contain drop-shadow-2xl translate-y-[-10px] scale-110 hover:scale-125 transition-transform duration-500"
               style={{ pointerEvents: "none" }}
@@ -54,8 +53,7 @@ export function PromoBanners() {
             </p>
             <button
               onClick={() => {
-                const imageUrl = window.location.origin + "/src/assets/smartwatch.png";
-                const text = encodeURIComponent(`Hello, I'm interested in the Smartwatches summer sale!\n\nImage: ${imageUrl}`);
+                const text = encodeURIComponent(`Hello! I'm interested in the *Smart Watches* summer sale!\nOffer: 20% OFF\nQuantity: 1\n*Total: (Summer Sale Price)*`);
                 window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
               }}
               className="bg-white hover:bg-gray-100 text-[#2dcc70] px-6 py-2.5 rounded-full font-bold text-[13px] w-fit shadow-md transition-transform hover:scale-105 active:scale-95"
@@ -67,7 +65,7 @@ export function PromoBanners() {
           {/* Overflowing image */}
           <div className="absolute right-0 bottom-0 top-0 flex items-center pr-4 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
             <img
-              src="/src/assets/smartwatch.png"
+              src="/assets/smartwatch.png"
               alt="Smartwatch"
               className="w-[180px] md:w-[280px] object-contain drop-shadow-2xl translate-y-[-10px] scale-110 hover:scale-125 transition-transform duration-500"
               style={{ pointerEvents: "none" }}

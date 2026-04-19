@@ -20,10 +20,8 @@ export function Hero() {
             <div>
               <button
                 onClick={() => {
-                  const imageUrl =
-                    window.location.origin + "/src/assets/headphones.png";
                   const text = encodeURIComponent(
-                    `Hello, I'm interested in the offer: Wireless Headphone.\n\nImage: ${imageUrl}`,
+                    `Hello! I'm interested in the *Wireless Headphone* Flash Offer.\nOffer: 40% OFF\nQuantity: 1\n*Total: (Special Offer Price)*`,
                   );
                   window.open(
                     `https://wa.me/212762895481?text=${text}`,
@@ -37,7 +35,7 @@ export function Hero() {
             </div>
           </div>
           <img
-            src="/src/assets/headphones.png"
+            src="/assets/headphones.png"
             alt="Wireless Headphones"
             className="absolute right-[60px] top-[50%] translate-y-[-50%] object-contain max-w-[80%] lg:max-w-[500px] z-10 drop-shadow-xl"
           />

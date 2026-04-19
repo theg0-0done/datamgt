@@ -43,7 +43,7 @@ export function Navbar({
             className="flex-shrink-0 flex items-center gap-[8px] cursor-pointer"
           >
             <img
-              src="/src/assets/logo.png"
+              src="/assets/logo.png"
               alt="Data Management Logo"
               className="h-[40px] w-auto object-contain"
             />

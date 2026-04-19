@@ -8,7 +8,7 @@ export function SiteFooter() {
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-1">
              <div className="flex-shrink-0 flex items-center gap-[8px] cursor-pointer mb-6">
-                <img src="/src/assets/logo.png" alt="Data Management Logo" className="h-[40px] w-auto object-contain" />
+                <img src="/assets/logo.png" alt="Data Management Logo" className="h-[40px] w-auto object-contain" />
              </div>
              <p className="text-m-ink-muted text-[14px] leading-relaxed mb-6">
                 Your premier destination for high-end electronics and accessories in Morocco. Experience quality, delivered by Data Management.
@@ -30,10 +30,10 @@ export function SiteFooter() {
           <div>
             <h4 className="font-bold text-[16px] mb-6">Quick Links</h4>
             <ul className="flex flex-col gap-3 text-[14px] text-m-ink-muted">
-                <li><a href="/" className="hover:text-m-red transition-colors">Home</a></li>
-                <li><a href="/about" className="hover:text-m-red transition-colors">About</a></li>
-                <li><a href="/products" className="hover:text-m-red transition-colors">All Products</a></li>
-                <li><a href="#faq" className="hover:text-m-red transition-colors">FAQ</a></li>
+                <li><a href="/" className="hover:text-m-red hover:font-bold transition-colors">Home</a></li>
+                <li><a href="/about" className="hover:text-m-red hover:font-bold transition-colors">About</a></li>
+                <li><a href="/products" className="hover:text-m-red hover:font-bold transition-colors">All Products</a></li>
+                <li><a href="#faq" className="hover:text-m-red hover:font-bold transition-colors">FAQ</a></li>
             </ul>
           </div>
 

@@ -101,16 +101,16 @@ function App() {
     setSearchParams(newParams);
   };
 
-  const addToCart = (product: any, e: React.MouseEvent) => {
+  const addToCart = (product: any, e: React.MouseEvent, qty: number = 1) => {
     e.stopPropagation();
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id === product.id);
       if (existingProduct) {
         return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, quantity: item.quantity + qty } : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }];
+        return [...prevCart, { ...product, quantity: qty }];
       }
     });
   };
@@ -200,7 +200,7 @@ function App() {
 
 // Helper wrapper for the detail page to extract route parameter and history
 import { useParams } from "react-router-dom";
-function ProductDetailPageWrapper({ onAddToCart }: { onAddToCart: (p: any, e: any) => void }) {
+function ProductDetailPageWrapper({ onAddToCart }: { onAddToCart: (p: any, e: any, qty?: number) => void }) {
   const { id } = useParams();
   const navigate = useNavigate();
   return (

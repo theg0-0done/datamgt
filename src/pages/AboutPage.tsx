@@ -5,7 +5,7 @@ export function AboutPage() {
     <div className="px-[5%] py-16 animation-fade-in">
         {/* Main Story */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
-            <div className="order-2 lg:order-1 relative rounded-[24px] overflow-hidden shadow-2xl h-[400px] md:h-[600px] group">
+            <div className="order-2 lg:order-1 relative rounded-[24px] overflow-hidden shadow-2xl h-[400px] md:h-[440px] group">
                 <div className="absolute inset-0 bg-m-ink/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                 <img 
                     src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
@@ -33,8 +33,10 @@ export function AboutPage() {
         </div>
 
         {/* Bold Process/Metrics */}
-        <div className="mb-32 rounded-[32px] p-12 md:p-24 text-white relative">           
-            <div className="relative z-10 flex justify-around flex-col md:flex-row w-full gap-12 text-center">
+        <div className="mb-32 rounded-[32px] p-12 md:p-24 text-white relative bg-m-ink shadow-2xl overflow-hidden">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-m-red/60 blur-[100px] -mr-64 -mt-64"></div>
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-m-blue/60 blur-[100px] -ml-64 -mb-64"></div>
+            <div className="relative z-10 flex justify-around flex-col md:flex-row w-full gap-12 text-center text-m-bg">
                 <div className="pt-8 md:pt-0">
                     <div className="text-[56px] md:text-[72px] font-bold tracking-tighter leading-none mb-2">
                         150+
