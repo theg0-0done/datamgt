@@ -92,7 +92,7 @@ export function TopProducts({
               <div className="absolute inset-0 bg-m-ink/5 dark:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                 <button
                   onClick={(e) => onAddToCart(product, e)}
-                  className="bg-m-ink text-m-card rounded-full p-3 shadow-lg hover:bg-m-red hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300"
+                  className="hidden lg:block bg-m-ink text-m-card rounded-full p-3 shadow-lg hover:bg-m-red hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300"
                 >
                   <ShoppingCart className="h-5 w-5" />
                 </button>
@@ -119,12 +119,20 @@ export function TopProducts({
                   )}
                 </div>
 
-                <button
-                  onClick={(e) => handleBuyNow(e, product)}
-                  className="w-full mt-4 bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
-                >
-                  BUY NOW
-                </button>
+                <div className="w-full flex justify-center items-center gap-2">
+                  <button
+                    onClick={(e) => handleBuyNow(e, product)}
+                    className="w-full mt-4 bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
+                  >
+                    BUY NOW
+                  </button>
+                  <button
+                    onClick={(e) => onAddToCart(product, e)}
+                    className="bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>

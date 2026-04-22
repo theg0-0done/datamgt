@@ -156,7 +156,7 @@ export function AllProductsPage({
                   )}
 
                   {/* Add to Cart Overlay */}
-                  <div className="absolute inset-0 bg-m-ink/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                  <div className="hidden lg:flex absolute inset-0 bg-m-ink/5 opacity-0 group-hover:opacity-100 transition-opacity items-center justify-center backdrop-blur-[2px]">
                     <button
                       onClick={(e) => onAddToCart(product, e)}
                       className="bg-white text-black p-4 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
@@ -185,13 +185,20 @@ export function AllProductsPage({
                         </span>
                       )}
                     </div>
-
+                    <div className="w-full flex justify-center items-center gap-2">
                     <button
                       onClick={(e) => handleBuyNow(e, product)}
                       className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 md:py-3 rounded-xl font-bold text-[13px] transition-all transform active:scale-95"
                     >
                       BUY NOW
                     </button>
+                    <button
+                      onClick={(e) => onAddToCart(product, e)}
+                      className="lg:hidden bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
