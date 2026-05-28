@@ -277,7 +277,7 @@ export const BENTO_CATEGORIES = [
     subtitle2: "With",
     color: "bg-[#1a1a1a]",
     textColor: "text-white",
-    image: "/assets/headphones.png",
+    image: "/assets/airbuds.png",
     colSpan: "col-span-4 md:col-span-2 lg:col-span-1"
   },
   {
@@ -310,7 +310,7 @@ export const BENTO_CATEGORIES = [
     subtitle2: "Next Gen",
     color: "bg-[#ebebeb]",
     textColor: "text-[#1a1a1a]",
-    image: "/assets/laptop.png",
+    image: "/assets/console.png",
     colSpan: "col-span-4 lg:col-span-2"
   },
   {

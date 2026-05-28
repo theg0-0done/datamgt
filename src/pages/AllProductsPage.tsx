@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { motion } from "motion/react";
 import { ShoppingCart, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { PRODUCTS, CATEGORIES } from "../data";
+import { useProducts } from "../context/ProductsContext";
 import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
 
 export function AllProductsPage({
@@ -21,22 +21,26 @@ export function AllProductsPage({
   onProductClick: (id: string) => void;
   onAddToCart: (product: any, e: React.MouseEvent) => void;
 }) {
+  const { products, categories, loading } = useProducts();
   const ITEMS_PER_PAGE = 40;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  let filtered = [...PRODUCTS];
+  let filtered = [...products];
   if (categoryFilter !== "All") {
     filtered = filtered.filter((p) => p.category === categoryFilter);
   }
   if (externalSearchQuery) {
     filtered = filtered.filter((p) =>
-      p.name.toLowerCase().includes(externalSearchQuery.toLowerCase())
+      p.name.toLowerCase().includes(externalSearchQuery.toLowerCase()),
     );
   }
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProducts = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentProducts = filtered.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   const scrollBy = (amount: number) => {
     if (scrollRef.current) {
@@ -49,9 +53,15 @@ export function AllProductsPage({
     // Auto-scroll active category button into view
     setTimeout(() => {
       if (scrollRef.current) {
-        const activeBtn = scrollRef.current.querySelector("[data-active='true']") as HTMLElement;
+        const activeBtn = scrollRef.current.querySelector(
+          "[data-active='true']",
+        ) as HTMLElement;
         if (activeBtn) {
-          activeBtn.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+          activeBtn.scrollIntoView({
+            inline: "center",
+            block: "nearest",
+            behavior: "smooth",
+          });
         }
       }
     }, 50);
@@ -65,12 +75,14 @@ export function AllProductsPage({
     let offerInfo = "";
     if (product.oldPrice) {
       const oldPriceValue = parseFloat(product.oldPrice.replace(/[^\d.]/g, ""));
-      const discountPercent = ((1 - priceValue / oldPriceValue) * 100).toFixed(0);
+      const discountPercent = ((1 - priceValue / oldPriceValue) * 100).toFixed(
+        0,
+      );
       offerInfo = `\nSpecial Offer: ${product.badge || "Sale"} (${discountPercent}% OFF)`;
     }
 
     const text = encodeURIComponent(
-      `Hello! I'd like to order:\n\n*${product.name}*${offerInfo}\nPrice: ${product.price}\nQuantity: 1\n*Total: ${product.price}*`
+      `Hello! I'd like to order:\n\n*${product.name}*${offerInfo}\nPrice: ${product.price}\nQuantity: 1\n*Total: ${product.price}*`,
     );
     window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
   };
@@ -83,7 +95,10 @@ export function AllProductsPage({
     >
       <div className="max-w-[1400px] mx-auto">
         {/* Categories Navigation with Scroll Arrows */}
-        <motion.div variants={fadeInUp} className="relative flex items-center gap-2 mb-4 lg:mb-8">
+        <motion.div
+          variants={fadeInUp}
+          className="relative flex items-center gap-2 mb-4 lg:mb-8"
+        >
           {/* Left Arrow */}
           <button
             onClick={() => scrollBy(-240)}
@@ -99,7 +114,7 @@ export function AllProductsPage({
             className="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 data-active={categoryFilter === cat ? "true" : "false"}
@@ -145,7 +160,7 @@ export function AllProductsPage({
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                   />
                   {product.badge && (
                     <div className="absolute top-4 left-4">
@@ -186,18 +201,18 @@ export function AllProductsPage({
                       )}
                     </div>
                     <div className="w-full flex justify-center items-center gap-2">
-                    <button
-                      onClick={(e) => handleBuyNow(e, product)}
-                      className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 md:py-3 rounded-xl font-bold text-[13px] transition-all transform active:scale-95"
-                    >
-                      BUY NOW
-                    </button>
-                    <button
-                      onClick={(e) => onAddToCart(product, e)}
-                      className="lg:hidden bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                    </button>
+                      <button
+                        onClick={(e) => handleBuyNow(e, product)}
+                        className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 md:py-3 rounded-xl font-bold text-[13px] transition-all transform active:scale-95"
+                      >
+                        BUY NOW
+                      </button>
+                      <button
+                        onClick={(e) => onAddToCart(product, e)}
+                        className="lg:hidden bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -214,7 +229,9 @@ export function AllProductsPage({
                 <Search className="h-8 w-8 text-m-ink-muted" />
               </div>
               <h3 className="text-xl font-bold mb-2">No products found</h3>
-              <p className="text-m-ink-muted">Try adjusting your filters or search query.</p>
+              <p className="text-m-ink-muted">
+                Try adjusting your filters or search query.
+              </p>
             </motion.div>
           )}
 
@@ -247,7 +264,9 @@ export function AllProductsPage({
                 ))}
               </div>
               <button
-                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+                onClick={() =>
+                  onPageChange(Math.min(totalPages, currentPage + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 border border-m-border rounded-lg disabled:opacity-50 hover:bg-m-border transition-colors bg-m-card"
               >

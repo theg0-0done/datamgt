@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SiteFooter } from "./components/SiteFooter";
 import { CartMenu } from "./components/CartMenu";
+import { QuickAddModal } from "./components/QuickAddModal";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { AllProductsPage } from "./pages/AllProductsPage";
@@ -32,6 +33,9 @@ function App() {
       return [];
     }
   });
+
+  // Quick Add State
+  const [quickAddProduct, setQuickAddProduct] = useState<any>(null);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -115,6 +119,11 @@ function App() {
     });
   };
 
+  const handleQuickAddOpen = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setQuickAddProduct(product);
+  };
+
   const removeFromCart = (productId: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
@@ -149,7 +158,7 @@ function App() {
               <HomePage 
                 onCategoryClick={handleCategoryChange}
                 onProductClick={handleProductClick}
-                onAddToCart={addToCart}
+                onAddToCart={handleQuickAddOpen}
                 searchQuery={searchQuery}
               />
             } 
@@ -168,7 +177,7 @@ function App() {
                 onCategoryChange={handleCategoryChange}
                 onPageChange={handlePageChange}
                 onProductClick={handleProductClick}
-                onAddToCart={addToCart}
+                onAddToCart={handleQuickAddOpen}
               />
             } 
           />
@@ -186,13 +195,20 @@ function App() {
         </Routes>
       </main>
 
-      <SiteFooter />
+      <SiteFooter isDark={isDark} />
 
       <CartMenu
         isOpen={isCartOpen}
         onClose={() => toggleCart(false)}
         cart={cart}
         onRemoveFromCart={removeFromCart}
+      />
+
+      <QuickAddModal
+        isOpen={quickAddProduct !== null}
+        onClose={() => setQuickAddProduct(null)}
+        product={quickAddProduct}
+        onAddToCart={addToCart}
       />
     </div>
   );

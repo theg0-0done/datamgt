@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Star, ShoppingCart, ArrowRight } from "lucide-react";
-import { PRODUCTS } from "../data";
+import { useProducts } from "../context/ProductsContext";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 
 export function TopProducts({
@@ -12,8 +12,16 @@ export function TopProducts({
   onAddToCart: (product: any, e: React.MouseEvent) => void;
   searchQuery: string;
 }) {
-  // Limit to exactly 8 products for a clean grid
-  const displayedProducts = PRODUCTS.slice(0, 8);
+  const { products, loading } = useProducts();
+  const displayedProducts = products.slice(0, 8);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-20 w-full h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-m-red"></div>
+      </div>
+    );
+  }
 
   const handleBuyNow = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();

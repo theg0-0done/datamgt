@@ -1,6 +1,8 @@
 import { Facebook, Instagram, MessageCircle, Mail } from "lucide-react";
+import darkLogo from "../assets/datamgt_dark_logo_png.png";
+import lightLogo from "../assets/datamgt_light_logo_png.png";
 
-export function SiteFooter() {
+export function SiteFooter({ isDark }: { isDark: boolean }) {
   return (
     <footer className="bg-m-card border-t border-m-border pt-16 pb-8">
       <div className="px-[5%]">
@@ -8,7 +10,7 @@ export function SiteFooter() {
           {/* Brand Col */}
           <div className="col-span-1 md:col-span-1">
              <div className="flex-shrink-0 flex items-center gap-[8px] cursor-pointer mb-6">
-                <img src="/assets/logo.png" alt="Data Management Logo" className="h-[40px] w-auto object-contain" />
+                <img src={isDark ? darkLogo : lightLogo} alt="Data Management Logo" className="h-[40px] w-auto object-contain" />
              </div>
              <p className="text-m-ink-muted text-[14px] leading-relaxed mb-6">
                 Your premier destination for high-end electronics and accessories in Morocco. Experience quality, delivered by Data Management.

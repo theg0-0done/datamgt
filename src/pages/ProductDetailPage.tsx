@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   ArrowLeft, ShoppingCart, Truck,
@@ -6,7 +7,7 @@ import {
   ChevronRight, ChevronLeft, Heart, Share2, 
   Star, RotateCcw, ShieldCheck, MessageSquare
 } from "lucide-react";
-import { PRODUCTS } from "../data";
+import { useProducts } from "../context/ProductsContext";
 import { ContactSection } from "../components/ContactSection";
 import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
 
@@ -19,20 +20,37 @@ export function ProductDetailPage({
   onBack: () => void;
   onAddToCart: (product: any, e: React.MouseEvent, quantity?: number) => void;
 }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('description');
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const product: any = PRODUCTS.find((p) => p.id.toString() === productId);
+  const { products, loading } = useProducts();
+  const product: any = products.find((p) => p.id.toString() === productId || (p.options && p.options.some((o: any) => o.id.toString() === productId)));
+
+  const [selectedOption, setSelectedOption] = useState<any>(null);
 
   useEffect(() => {
     if (product) {
-       setSelectedImage(product.image);
+       let defaultOpt = null;
+       if (product.options && product.options.length > 0) {
+         defaultOpt = product.options.find((o: any) => o.id.toString() === productId) || product.options[0];
+       }
+       setSelectedOption(defaultOpt);
+       setSelectedImage(defaultOpt ? defaultOpt.image : product.image);
        setQuantity(1);
        window.scrollTo(0, 0);
     }
-  }, [product]);
+  }, [product, productId]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-20 min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-m-red"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -45,21 +63,34 @@ export function ProductDetailPage({
     );
   }
 
+  const currentPrice = selectedOption ? selectedOption.price : product.price;
+  const currentOldPrice = selectedOption ? selectedOption.oldPrice : product.oldPrice;
+  const currentImages = selectedOption ? selectedOption.images : product.images;
+
   const handleBuyNow = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const priceValue = parseFloat(product.price.replace(/[^\d.]/g, ''));
+    const targetProduct = selectedOption ? {
+      ...product,
+      id: selectedOption.id,
+      name: `${product.name} (${selectedOption.specValue})`,
+      price: selectedOption.price,
+      oldPrice: selectedOption.oldPrice,
+      badge: product.badge
+    } : product;
+
+    const priceValue = parseFloat(targetProduct.price.replace(/[^\d.]/g, ''));
     const total = (priceValue * quantity).toFixed(2);
     
     let offerInfo = "";
-    if (product.oldPrice) {
-      const oldPriceValue = parseFloat(product.oldPrice.replace(/[^\d.]/g, ''));
+    if (targetProduct.oldPrice) {
+      const oldPriceValue = parseFloat(targetProduct.oldPrice.replace(/[^\d.]/g, ''));
       const discountPercent = ((1 - (priceValue / oldPriceValue)) * 100).toFixed(0);
-      offerInfo = `\nSpecial Offer: ${product.badge || 'Sale'} (${discountPercent}% OFF)`;
+      offerInfo = `\nSpecial Offer: ${targetProduct.badge || 'Sale'} (${discountPercent}% OFF)`;
     }
 
     const text = encodeURIComponent(
-      `Hello! I'd like to order:\n\n*${product.name}*${offerInfo}\nPrice: ${product.price}\nQuantity: ${quantity}\n*Total: ${total} DH*`
+      `Hello! I'd like to order:\n\n*${targetProduct.name}*${offerInfo}\nPrice: ${targetProduct.price}\nQuantity: ${quantity}\n*Total: ${total} DH*`
     );
     window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
   };
@@ -74,7 +105,7 @@ export function ProductDetailPage({
     }
   };
 
-  const relatedProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 10);
+  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 10);
 
   return (
     <motion.div 
@@ -108,9 +139,9 @@ export function ProductDetailPage({
             </div>
 
             {/* Thumbnails */}
-            {product.images && product.images.length > 1 && (
+            {currentImages && currentImages.length > 1 && (
               <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide py-2">
-                {product.images.map((img: string, i: number) => (
+                {currentImages.map((img: string, i: number) => (
                   <button 
                     key={i}
                     onClick={() => setSelectedImage(img)}
@@ -133,9 +164,9 @@ export function ProductDetailPage({
             </h1>
             
             <div className="flex items-center gap-4 mb-8">
-               <div className="text-[36px] font-black text-m-ink">{product.price}</div>
-               {product.oldPrice && (
-                 <div className="text-[20px] text-m-ink-muted line-through font-medium">{product.oldPrice}</div>
+               <div className="text-[36px] font-black text-m-ink">{currentPrice}</div>
+               {currentOldPrice && (
+                 <div className="text-[20px] text-m-ink-muted line-through font-medium">{currentOldPrice}</div>
                )}
             </div>
 
@@ -144,19 +175,51 @@ export function ProductDetailPage({
             </p>
 
             <div className="space-y-8 mb-12">
+               {/* Options Selector */}
+               {product.options && product.options.length > 0 && (
+                 <div className="mb-4">
+                   <h3 className="text-[13px] font-black uppercase tracking-wider text-m-ink-muted mb-3">
+                     Select Specification
+                   </h3>
+                   <div className="flex flex-wrap gap-2.5">
+                     {product.options.map((opt: any) => {
+                       const isSelected = selectedOption?.id === opt.id;
+                       return (
+                         <button
+                           key={opt.id}
+                           onClick={() => {
+                             setSelectedOption(opt);
+                             if (opt.image) {
+                               setSelectedImage(opt.image);
+                             }
+                           }}
+                           className={`px-5 py-3 rounded-[16px] border-2 font-bold text-[14px] transition-all cursor-pointer ${
+                             isSelected
+                               ? "border-m-red bg-m-red/5 text-m-red scale-[1.03]"
+                               : "border-m-border hover:border-m-ink-muted bg-m-card text-m-ink"
+                           }`}
+                         >
+                           {opt.specValue}
+                         </button>
+                       );
+                     })}
+                   </div>
+                 </div>
+               )}
+
                {/* Quantity & Actions */}
                <div className="flex flex-col sm:flex-row gap-6 items-center">
                   <div className="flex items-center border-2 border-m-border rounded-full p-1 bg-m-card h-[60px]">
                      <button 
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors"
+                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors cursor-pointer"
                      >
                         <Minus className="h-4 w-4" />
                      </button>
                      <span className="w-12 text-center font-bold text-[20px]">{quantity}</span>
                      <button 
                         onClick={() => setQuantity(quantity + 1)}
-                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors"
+                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors cursor-pointer"
                      >
                         <Plus className="h-4 w-4" />
                      </button>
@@ -165,13 +228,22 @@ export function ProductDetailPage({
                   <div className="flex flex-1 w-full gap-4 h-[60px]">
                     <button 
                       onClick={handleBuyNow}
-                      className="flex-[2] bg-m-red hover:bg-[#a11f24] text-white rounded-full font-black text-[16px] transition-all hover:scale-[1.02] shadow-xl shadow-m-red/20 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest"
+                      className="flex-[2] bg-m-red hover:bg-[#a11f24] text-white rounded-full font-black text-[16px] transition-all hover:scale-[1.02] shadow-xl shadow-m-red/20 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer"
                     >
                       Buy Now
                     </button>
                     <button 
-                      onClick={(e) => onAddToCart(product, e, quantity)}
-                      className="flex-[1] border-2 border-m-ink rounded-full font-black text-[16px] transition-all hover:scale-[1.02] flex items-center justify-center gap-2 hover:bg-m-ink hover:text-m-bg"
+                      onClick={(e) => {
+                        const targetProduct = selectedOption ? {
+                          ...product,
+                          id: selectedOption.id,
+                          name: `${product.name} (${selectedOption.specValue})`,
+                          price: selectedOption.price,
+                          image: selectedOption.image || product.image
+                        } : product;
+                        onAddToCart(targetProduct, e, quantity);
+                      }}
+                      className="flex-[1] border-2 border-m-ink rounded-full font-black text-[16px] transition-all hover:scale-[1.02] flex items-center justify-center gap-2 hover:bg-m-ink hover:text-m-bg cursor-pointer"
                     >
                       <ShoppingCart className="h-5 w-5" />
                     </button>
@@ -293,7 +365,10 @@ export function ProductDetailPage({
                {relatedProducts.map((p) => (
                 <div 
                   key={p.id}
-                  onClick={() => { window.location.href = `/product/${p.id}`; }}
+                  onClick={() => {
+                    navigate(`/product/${p.id}`);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   className="min-w-[280px] md:min-w-[320px] group cursor-pointer"
                 >
                    <div className="aspect-[4/5] bg-m-bg rounded-[32px] p-8 mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">

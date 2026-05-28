@@ -1,0 +1,457 @@
+[
+  {
+    "id": 9,
+    "category": "Accessoires",
+    "price": "80 MAD",
+    "old_name": "Baffe Kisonli A-707",
+    "new_name": "Haut-parleur Kisonli A-707"
+  },
+  {
+    "id": 10,
+    "category": "Accessoires",
+    "price": "80 MAD",
+    "old_name": "Baffe Kisonli I-610",
+    "new_name": "Haut-parleur Kisonli I-610"
+  },
+  {
+    "id": 11,
+    "category": "Accessoires",
+    "price": "130 MAD",
+    "old_name": "Baffe Kisonli X13",
+    "new_name": "Haut-parleur Kisonli X13"
+  },
+  {
+    "id": 22,
+    "category": "Accessoires",
+    "price": "350 MAD",
+    "old_name": "Cqsaue JABRA ORIGINE",
+    "new_name": "Casque JABRA ORIGINE"
+  },
+  {
+    "id": 23,
+    "category": "Accessoires",
+    "price": "270 MAD",
+    "old_name": "Appareil Tel Sans Fil Telefunken",
+    "new_name": "Téléphone Sans Filaire Telefunken"
+  },
+  {
+    "id": 24,
+    "category": "Accessoires",
+    "price": "280 MAD",
+    "old_name": "Appareil Tel Sans Fil MOTOROLA",
+    "new_name": "Téléphone Sans Filaire Motorola"
+  },
+  {
+    "id": 26,
+    "category": "Accessoires",
+    "price": "200 MAD",
+    "old_name": "Botier HDD 3.5 2-In-1",
+    "new_name": "Boîtier HDD 3.5 2-In-1"
+  },
+  {
+    "id": 31,
+    "category": "Accessoires",
+    "price": "100 MAD",
+    "old_name": "Baffe Jedel S-526",
+    "new_name": "Haut-parleur Jedel S-526"
+  },
+  {
+    "id": 32,
+    "category": "Accessoires",
+    "price": "850 MAD",
+    "old_name": "Geforce GT730 DDR3",
+    "new_name": "Carte Graphique Nvidia GeForce GT 730 DDR3"
+  },
+  {
+    "id": 38,
+    "category": "Souris",
+    "price": "70 MAD",
+    "old_name": "Souris Sans Fil R8",
+    "new_name": "Souris Sans Filaire R8"
+  },
+  {
+    "id": 39,
+    "category": "Souris",
+    "price": "90 MAD",
+    "old_name": "Souris Sans Fil Rechargeable",
+    "new_name": "Souris Sans Filaire Rechargeable"
+  },
+  {
+    "id": 41,
+    "category": "Souris",
+    "price": "150 MAD",
+    "old_name": "Souris Fil HP X500",
+    "new_name": "Souris Filaire HP X500"
+  },
+  {
+    "id": 42,
+    "category": "Souris",
+    "price": "180 MAD",
+    "old_name": "Souris S.F HP X200",
+    "new_name": "Souris Sans Filaire HP X200"
+  },
+  {
+    "id": 43,
+    "category": "Souris",
+    "price": "130 MAD",
+    "old_name": "Souris S.F Logitech M171",
+    "new_name": "Souris Sans Filaire Logitech M171"
+  },
+  {
+    "id": 44,
+    "category": "Souris",
+    "price": "100 MAD",
+    "old_name": "Soris Fil HP 100",
+    "new_name": "Souris Filaire HP 100"
+  },
+  {
+    "id": 45,
+    "category": "Souris",
+    "price": "35 MAD",
+    "old_name": "Souris Fil NGS",
+    "new_name": "Souris Filaire NGS"
+  },
+  {
+    "id": 47,
+    "category": "Souris",
+    "price": "30 MAD",
+    "old_name": "Souris Fil DELL",
+    "new_name": "Souris Filaire DELL"
+  },
+  {
+    "id": 48,
+    "category": "Souris",
+    "price": "50 MAD",
+    "old_name": "Souris Fil Logitech B100",
+    "new_name": "Souris Filaire Logitech B100"
+  },
+  {
+    "id": 49,
+    "category": "Encre",
+    "price": "80 MAD",
+    "old_name": "Encre Imprimante Canon Pixma G3430",
+    "new_name": "Bouteille d'encre Canon GI-41"
+  },
+  {
+    "id": 53,
+    "category": "Encre",
+    "price": "70 MAD",
+    "old_name": "Encre Imprimante Canon Pixma G3411",
+    "new_name": "Bouteille d'encre Canon GI-490"
+  },
+  {
+    "id": 58,
+    "category": "Encre",
+    "price": "150 MAD",
+    "old_name": "Encre Origine Imprimante Canon Pixma G3411",
+    "new_name": "Bouteille d'encre Originale Canon GI-490"
+  },
+  {
+    "id": 62,
+    "category": "Encre",
+    "price": "350 MAD",
+    "old_name": "Encre Origine Epson 110",
+    "new_name": "Bouteille d'encre Originale Epson 110"
+  },
+  {
+    "id": 63,
+    "category": "Encre",
+    "price": "80 MAD",
+    "old_name": "Encre Epson 3100 Serie",
+    "new_name": "Bouteille d'encre Epson 103"
+  },
+  {
+    "id": 67,
+    "category": "Encre",
+    "price": "80 MAD",
+    "old_name": "Encre Epson T6641",
+    "new_name": "Bouteille d'encre Epson T6641 (Noir)"
+  },
+  {
+    "id": 69,
+    "category": "Cartouches",
+    "price": "150 MAD",
+    "old_name": "Cartouche HP 653 Origine",
+    "new_name": "Cartouche d'encre Originale HP 653"
+  },
+  {
+    "id": 70,
+    "category": "Cartouches",
+    "price": "150 MAD",
+    "old_name": "Cartouche HP 650 Origine",
+    "new_name": "Cartouche d'encre Originale HP 650"
+  },
+  {
+    "id": 72,
+    "category": "Cartouches",
+    "price": "180 MAD",
+    "old_name": "Cartouche HP 121 Origine",
+    "new_name": "Cartouche d'encre Originale HP 121"
+  },
+  {
+    "id": 74,
+    "category": "Cartouches",
+    "price": "180 MAD",
+    "old_name": "Cartouche HP 122 Origine",
+    "new_name": "Cartouche d'encre Originale HP 122"
+  },
+  {
+    "id": 75,
+    "category": "Cartouches",
+    "price": "250 MAD",
+    "old_name": "Cartouche HP 652 Origine",
+    "new_name": "Cartouche d'encre Originale HP 652"
+  },
+  {
+    "id": 78,
+    "category": "Cartouches",
+    "price": "200 MAD",
+    "old_name": "Cartouche HP 123 Origine",
+    "new_name": "Cartouche d'encre Originale HP 123"
+  },
+  {
+    "id": 80,
+    "category": "Cartouches",
+    "price": "180 MAD",
+    "old_name": "Cartouche HP 305 Origine",
+    "new_name": "Cartouche d'encre Originale HP 305"
+  },
+  {
+    "id": 81,
+    "category": "Cartouches",
+    "price": "230 MAD",
+    "old_name": "Cartouche Canon 446 Origine",
+    "new_name": "Cartouche d'encre Originale Canon 446"
+  },
+  {
+    "id": 82,
+    "category": "Cartouches",
+    "price": "200 MAD",
+    "old_name": "Cartouche Canon 445 Origine",
+    "new_name": "Cartouche d'encre Originale Canon 445"
+  },
+  {
+    "id": 85,
+    "category": "Accessoires",
+    "price": "130 MAD",
+    "old_name": "Clavier Fil Logitech K120",
+    "new_name": "Clavier Filaire Logitech K120"
+  },
+  {
+    "id": 86,
+    "category": "Accessoires",
+    "price": "150 MAD",
+    "old_name": "Clavier+Souris Sans Fil HAVIC KB100",
+    "new_name": "Clavier et Souris Sans Filaire Havit KB100"
+  },
+  {
+    "id": 87,
+    "category": "Accessoires",
+    "price": "130 MAD",
+    "old_name": "Clavier + Souris Sans Fil HK3200",
+    "new_name": "Clavier + Souris Sans Filaire HK3200"
+  },
+  {
+    "id": 90,
+    "category": "Camera_Wifi",
+    "price": "380 MAD",
+    "old_name": "Camera Wifi Smart Home C1C-B",
+    "new_name": "Caméra Wi-Fi EZVIZ C1C-B"
+  },
+  {
+    "id": 91,
+    "category": "Camera_Wifi",
+    "price": "450 MAD",
+    "old_name": "Camera Wifi Smart Home H6c",
+    "new_name": "Caméra Wi-Fi EZVIZ H6c"
+  },
+  {
+    "id": 92,
+    "category": "Camera_Wifi",
+    "price": "500 MAD",
+    "old_name": "Camera Etanche Wifi H3C",
+    "new_name": "Caméra Wi-Fi Extérieure EZVIZ H3c"
+  },
+  {
+    "id": 93,
+    "category": "Camera_Wifi",
+    "price": "650 MAD",
+    "old_name": "Camera Wifi C3W Coleur Vue Jour/Nuit",
+    "new_name": "Caméra Wi-Fi EZVIZ C3W Color Night Vision"
+  },
+  {
+    "id": 104,
+    "category": "Toner",
+    "price": "200 MAD",
+    "old_name": "Toner Pour Lexmark /350/352",
+    "new_name": "Toner Lexmark E250A11E / E352"
+  },
+  {
+    "id": 105,
+    "category": "Toner",
+    "price": "220 MAD",
+    "old_name": "Toner Pour Canon/HP M404/M428",
+    "new_name": "Toner HP 59A (CF259A) / Canon CRG-057"
+  },
+  {
+    "id": 106,
+    "category": "Toner",
+    "price": "400 MAD",
+    "old_name": "Toner Pour HP M404/MFP428",
+    "new_name": "Toner HP 59A (CF259A)"
+  },
+  {
+    "id": 107,
+    "category": "Toner",
+    "price": "320 MAD",
+    "old_name": "Toner Pour Samsung SCX-4300",
+    "new_name": "Toner Samsung MLT-D109S"
+  },
+  {
+    "id": 108,
+    "category": "Toner",
+    "price": "170 MAD",
+    "old_name": "Toner Pour HP P2015/1320",
+    "new_name": "Toner HP 53A (Q7553A) / 49A (Q5949A)"
+  },
+  {
+    "id": 109,
+    "category": "Toner",
+    "price": "150 MAD",
+    "old_name": "Toner Pour HP1010/1018 Canon LBP2900",
+    "new_name": "Toner HP 12A (Q2612A) / Canon CRG-703"
+  },
+  {
+    "id": 110,
+    "category": "Toner",
+    "price": "180 MAD",
+    "old_name": "Toner Pour HP 107a/MFP135",
+    "new_name": "Toner HP 106A (W1106A)"
+  },
+  {
+    "id": 111,
+    "category": "Toner",
+    "price": "150 MAD",
+    "old_name": "Toner Pour HP 102A/M130 Cznon LBP113",
+    "new_name": "Toner HP 17A (CF217A) / Canon CRG-047"
+  },
+  {
+    "id": 112,
+    "category": "Toner",
+    "price": "180 MAD",
+    "old_name": "Toner Pour Hp 2030/2055 M400",
+    "new_name": "Toner HP 05A (CE505A) / 80A (CF280A)"
+  },
+  {
+    "id": 113,
+    "category": "Toner",
+    "price": "150 MAD",
+    "old_name": "Toner Pour HP 83A M128",
+    "new_name": "Toner HP 83A (CF283A)"
+  },
+  {
+    "id": 123,
+    "category": "Accessoires",
+    "price": "290 MAD",
+    "old_name": "Kaspersky Antivirus Standard 03 Appareils",
+    "new_name": "Kaspersky Standard 3 Appareils"
+  },
+  {
+    "id": 124,
+    "category": "Accessoires",
+    "price": "390 MAD",
+    "old_name": "Kaspersky Antivirus Plus 03 Appareils",
+    "new_name": "Kaspersky Plus 3 Appareils"
+  },
+  {
+    "id": 125,
+    "category": "Accessoires",
+    "price": "150 MAD",
+    "old_name": "Kaspersky Antivirus Internet Securité 01 Appareils",
+    "new_name": "Kaspersky Internet Security 1 Appareil"
+  },
+  {
+    "id": 126,
+    "category": "Toner",
+    "price": "180 MAD",
+    "old_name": "Toner Samsung MLT-104 Serie",
+    "new_name": "Toner Samsung MLT-D104S"
+  },
+  {
+    "id": 127,
+    "category": "Toner",
+    "price": "180 MAD",
+    "old_name": "Toner Samsung MLT-D111 Serie",
+    "new_name": "Toner Samsung MLT-D111S"
+  },
+  {
+    "id": 130,
+    "category": "Toner",
+    "price": "350 MAD",
+    "old_name": "Toner Konika TN217/TN414",
+    "new_name": "Toner Konica Minolta TN-217 / TN-414"
+  },
+  {
+    "id": 131,
+    "category": "Toner",
+    "price": "550 MAD",
+    "old_name": "Toner Konika TN414 Origine",
+    "new_name": "Toner Konica Minolta TN-414 (Original)"
+  },
+  {
+    "id": 132,
+    "category": "Toner",
+    "price": "180 MAD",
+    "old_name": "Toner Konika TN211",
+    "new_name": "Toner Konica Minolta TN-211"
+  },
+  {
+    "id": 133,
+    "category": "Toner",
+    "price": "150 MAD",
+    "old_name": "Toner HP M12a/M26a CF279A",
+    "new_name": "Toner HP 79A (CF279A)"
+  },
+  {
+    "id": 157,
+    "category": "Toner",
+    "price": "150 MAD",
+    "old_name": "Toner HP244A M15a/M28a",
+    "new_name": "Toner HP 44A (CF244A)"
+  },
+  {
+    "id": 313,
+    "category": "Camira",
+    "price": "600 MAD",
+    "old_name": "Camera Wifi Smart Home H6c",
+    "new_name": "Caméra Wi-Fi EZVIZ H6c"
+  },
+  {
+    "id": 342,
+    "category": "Souris",
+    "price": "60 MAD",
+    "old_name": "Souris Sansfil ITGURU",
+    "new_name": "Souris SansFilaire ITGURU"
+  },
+  {
+    "id": 343,
+    "category": "Souris",
+    "price": "150 MAD",
+    "old_name": "Souris Transparent Sans Fil YILIMA",
+    "new_name": "Souris Transparent Sans Filaire YILIMA"
+  },
+  {
+    "id": 376,
+    "category": "Accessoires",
+    "price": "280 MAD",
+    "old_name": "Appareil Tel Fil Telefunken TB301",
+    "new_name": "Appareil Tel Filaire Telefunken TB301"
+  },
+  {
+    "id": 418,
+    "category": "Uncategorized",
+    "price": "270 MAD",
+    "old_name": "Clavier+Souris Sons Fil Logitech",
+    "new_name": "Clavier+Souris Sons Filaire Logitech"
+  }
+]

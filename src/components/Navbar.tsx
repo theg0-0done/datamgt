@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Search, ShoppingCart, Sun, Moon, Menu, X, Home, Info, Package, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import darkLogo from "../assets/datamgt_dark_logo_png.png";
+import lightLogo from "../assets/datamgt_light_logo_png.png";
 
 export function Navbar({
   toggleTheme,
@@ -53,7 +55,7 @@ export function Navbar({
               className="flex-shrink-0 flex items-center gap-[8px] cursor-pointer"
             >
               <img
-                src="/assets/logo.png"
+                src={isDark ? darkLogo : lightLogo}
                 alt="Data Management Logo"
                 className="h-[30px] md:h-[40px] w-auto object-contain"
               />
@@ -149,7 +151,7 @@ export function Navbar({
               {/* Panel Header */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-m-border">
                 <img
-                  src="/assets/logo.png"
+                  src={isDark ? darkLogo : lightLogo}
                   alt="Logo"
                   className="h-[30px] w-auto object-contain"
                 />
