@@ -5,11 +5,13 @@ export function CartMenu({
   onClose,
   cart,
   onRemoveFromCart,
+  onCheckout,
 }: {
   isOpen: boolean;
   onClose: () => void;
   cart: { id: string; name: string; price: string; image: string; quantity: number }[];
   onRemoveFromCart: (id: string) => void;
+  onCheckout: () => void;
 }) {
   const calculateTotal = () => {
     return cart.reduce((total, item) => {
@@ -17,20 +19,6 @@ export function CartMenu({
       const price = parseFloat(priceStr);
       return total + price * item.quantity;
     }, 0).toFixed(2);
-  };
-
-  const handleCheckout = () => {
-    if (cart.length === 0) return;
-    
-    let message = "Hello! I would like to checkout the following items:\n\n";
-    cart.forEach(item => {
-        message += `- ${item.name} (x${item.quantity}) - ${item.price}\n`;
-    });
-    
-    message += `\n*Total Order: $${calculateTotal()}*`;
-    
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/212762895481?text=${encodedMessage}`, '_blank');
   };
 
   return (
@@ -120,13 +108,13 @@ export function CartMenu({
           <div className="p-6 border-t border-m-border bg-gradient-to-t from-m-card to-transparent">
             <div className="flex justify-between items-center mb-6">
               <span className="font-medium opacity-80">Subtotal</span>
-              <span className="font-bold text-[24px]">${calculateTotal()}</span>
+              <span className="font-bold text-[24px]">{calculateTotal()} MAD</span>
             </div>
             <button 
-                onClick={handleCheckout}
+                onClick={onCheckout}
                 className="w-full bg-m-red hover:bg-[#a11f24] text-white py-[16px] rounded-[12px] font-bold text-[16px] transition-colors flex items-center justify-center gap-2 shadow-lg"
             >
-              Checkout on WhatsApp <ArrowRight className="h-5 w-5" />
+              Checkout <ArrowRight className="h-5 w-5" />
             </button>
             <p className="text-center text-[11px] text-m-ink-muted mt-4">
                Taxes and shipping calculated at checkout

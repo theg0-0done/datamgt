@@ -4,8 +4,10 @@ import { Navbar } from "./components/Navbar";
 import { SiteFooter } from "./components/SiteFooter";
 import { CartMenu } from "./components/CartMenu";
 import { QuickAddModal } from "./components/QuickAddModal";
+import { BuyNowModal } from "./components/BuyNowModal";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
+import { ContactPage } from "./pages/ContactPage";
 import { AllProductsPage } from "./pages/AllProductsPage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -36,6 +38,10 @@ function App() {
 
   // Quick Add State
   const [quickAddProduct, setQuickAddProduct] = useState<any>(null);
+
+  // Buy Now State
+  const [buyNowProduct, setBuyNowProduct] = useState<any>(null);
+  const [buyNowCartItems, setBuyNowCartItems] = useState<any[] | undefined>(undefined);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -124,6 +130,27 @@ function App() {
     setQuickAddProduct(product);
   };
 
+  const handleBuyNowOpen = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setBuyNowCartItems(undefined);
+    setBuyNowProduct(product);
+  };
+
+  const handleCartCheckout = () => {
+    if (cart.length === 0) return;
+    toggleCart(false);
+    setBuyNowCartItems(cart);
+    // Use first cart item as the "product" for the modal
+    setBuyNowProduct(cart[0]);
+  };
+
+  const handleOrderComplete = () => {
+    // If it was a cart checkout, clear the cart
+    if (buyNowCartItems && buyNowCartItems.length > 0) {
+      setCart([]);
+    }
+  };
+
   const removeFromCart = (productId: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
@@ -146,8 +173,6 @@ function App() {
         onNavigate={handleNavigate}
         cartCount={cart.reduce((acc, item) => acc + item.quantity, 0)}
         onCartClick={() => toggleCart(true)}
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
       />
 
       <main className="flex-grow flex flex-col relative w-full">
@@ -159,6 +184,7 @@ function App() {
                 onCategoryClick={handleCategoryChange}
                 onProductClick={handleProductClick}
                 onAddToCart={handleQuickAddOpen}
+                onBuyNow={handleBuyNowOpen}
                 searchQuery={searchQuery}
               />
             } 
@@ -166,6 +192,10 @@ function App() {
           <Route 
             path="/about" 
             element={<AboutPage />} 
+          />
+          <Route 
+            path="/contact" 
+            element={<ContactPage />} 
           />
           <Route 
             path="/products" 
@@ -178,6 +208,8 @@ function App() {
                 onPageChange={handlePageChange}
                 onProductClick={handleProductClick}
                 onAddToCart={handleQuickAddOpen}
+                onBuyNow={handleBuyNowOpen}
+                onSearchChange={handleSearchChange}
               />
             } 
           />
@@ -186,7 +218,8 @@ function App() {
             element={
               <React.Fragment key={window.location.pathname}>
                 <ProductDetailPageWrapper 
-                   onAddToCart={addToCart}
+                   onAddToCart={handleQuickAddOpen}
+                   onBuyNow={handleBuyNowOpen}
                 />
               </React.Fragment>
             }
@@ -202,6 +235,7 @@ function App() {
         onClose={() => toggleCart(false)}
         cart={cart}
         onRemoveFromCart={removeFromCart}
+        onCheckout={handleCartCheckout}
       />
 
       <QuickAddModal
@@ -209,6 +243,15 @@ function App() {
         onClose={() => setQuickAddProduct(null)}
         product={quickAddProduct}
         onAddToCart={addToCart}
+        onBuyNow={handleBuyNowOpen}
+      />
+
+      <BuyNowModal
+        isOpen={buyNowProduct !== null}
+        onClose={() => { setBuyNowProduct(null); setBuyNowCartItems(undefined); }}
+        product={buyNowProduct}
+        cartItems={buyNowCartItems}
+        onOrderComplete={handleOrderComplete}
       />
     </div>
   );
@@ -216,7 +259,7 @@ function App() {
 
 // Helper wrapper for the detail page to extract route parameter and history
 import { useParams } from "react-router-dom";
-function ProductDetailPageWrapper({ onAddToCart }: { onAddToCart: (p: any, e: any, qty?: number) => void }) {
+function ProductDetailPageWrapper({ onAddToCart, onBuyNow }: { onAddToCart: (p: any, e: any, qty?: number) => void; onBuyNow: (p: any, e: any) => void }) {
   const { id } = useParams();
   const navigate = useNavigate();
   return (
@@ -224,6 +267,7 @@ function ProductDetailPageWrapper({ onAddToCart }: { onAddToCart: (p: any, e: an
       productId={id || ""} 
       onBack={() => navigate(-1)} 
       onAddToCart={onAddToCart}
+      onBuyNow={onBuyNow}
     />
   );
 }

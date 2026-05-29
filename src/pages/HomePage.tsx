@@ -11,22 +11,25 @@ export function HomePage({
   onCategoryClick,
   onProductClick,
   onAddToCart,
+  onBuyNow,
   searchQuery,
 }: {
   onCategoryClick: (category: string) => void;
   onProductClick: (id: string) => void;
   onAddToCart: (product: any, e: React.MouseEvent) => void;
+  onBuyNow: (product: any, e: React.MouseEvent) => void;
   searchQuery: string;
 }) {
   return (
     <>
-      <Hero />
+      <Hero onBuyNow={onBuyNow} />
       <BentoCategory onCategoryClick={onCategoryClick} />
       <FeaturesBar />
-      <PromoBanners />
+      <PromoBanners onBuyNow={onBuyNow} />
       <TopProducts
         onProductClick={onProductClick}
         onAddToCart={onAddToCart}
+        onBuyNow={onBuyNow}
         searchQuery={searchQuery}
       />
       <FAQSection />

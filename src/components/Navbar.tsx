@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, ShoppingCart, Sun, Moon, Menu, X, Home, Info, Package, HelpCircle } from "lucide-react";
+import { ShoppingCart, Sun, Moon, Menu, X, Home, Info, Package, HelpCircle, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import darkLogo from "../assets/datamgt_dark_logo_png.png";
 import lightLogo from "../assets/datamgt_light_logo_png.png";
@@ -10,16 +10,12 @@ export function Navbar({
   onNavigate,
   cartCount,
   onCartClick,
-  searchQuery,
-  onSearchChange,
 }: {
   toggleTheme: () => void;
   isDark: boolean;
   onNavigate: (page: string) => void;
   cartCount: number;
   onCartClick: () => void;
-  searchQuery: string;
-  onSearchChange: (q: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,7 +37,7 @@ export function Navbar({
     { label: "Home", icon: <Home className="h-5 w-5" />, action: () => { onNavigate("/"); setIsOpen(false); } },
     { label: "About", icon: <Info className="h-5 w-5" />, action: () => { onNavigate("/about"); setIsOpen(false); } },
     { label: "Products", icon: <Package className="h-5 w-5" />, action: () => { onNavigate("/products"); setIsOpen(false); } },
-    { label: "FAQ", icon: <HelpCircle className="h-5 w-5" />, action: () => scrollToSection("faq") },
+    { label: "Contact", icon: <Mail className="h-5 w-5" />, action: () => { onNavigate("/contact"); setIsOpen(false); } },
   ];
 
   return (
@@ -66,21 +62,11 @@ export function Navbar({
               <button onClick={() => onNavigate("/")} className="opacity-80 hover:opacity-100 transition-colors">Home</button>
               <button onClick={() => onNavigate("/about")} className="opacity-80 hover:opacity-100 transition-colors">About</button>
               <button onClick={() => onNavigate("/products")} className="opacity-80 hover:opacity-100 transition-colors">Products</button>
-              <button onClick={() => scrollToSection("faq")} className="opacity-80 hover:opacity-100 transition-colors">FAQ</button>
+              <button onClick={() => onNavigate("/contact")} className="opacity-80 hover:opacity-100 transition-colors">Contact</button>
             </div>
 
             {/* Desktop Right Controls */}
             <div className="hidden lg:flex items-center space-x-[20px] font-bold text-[14px]">
-              <div className="relative flex items-center bg-m-border rounded-full px-3 py-1.5 focus-within:ring-2 focus-within:ring-m-red transition-all shadow-inner">
-                <Search className="h-4 w-4 text-m-ink-muted mr-2" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  className="bg-transparent border-none outline-none text-[14px] font-medium w-[100px] focus:w-[160px] transition-all placeholder:text-m-ink-muted/70 text-m-ink"
-                />
-              </div>
               <button
                 onClick={onCartClick}
                 className="text-m-ink p-2 rounded-full bg-m-border hover:bg-m-card-hover opacity-80 hover:opacity-100 flex items-center gap-2 relative"
@@ -163,19 +149,7 @@ export function Navbar({
                 </button>
               </div>
 
-              {/* Search Bar */}
-              <div className="px-6 pt-5 pb-3">
-                <div className="flex items-center bg-m-border rounded-xl px-4 py-3 gap-3 focus-within:ring-2 focus-within:ring-m-red transition-all">
-                  <Search className="h-4 w-4 text-m-ink-muted flex-shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange(e.target.value)}
-                    className="bg-transparent border-none outline-none text-[14px] font-medium w-full placeholder:text-m-ink-muted/70 text-m-ink"
-                  />
-                </div>
-              </div>
+
 
               {/* Nav Links */}
               <nav className="flex flex-col px-4 pt-2 gap-1 flex-grow">

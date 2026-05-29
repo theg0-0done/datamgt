@@ -5,7 +5,8 @@ import {
   ArrowLeft, ShoppingCart, Truck,
   Plus, Minus, Headphones, 
   ChevronRight, ChevronLeft, Heart, Share2, 
-  Star, RotateCcw, ShieldCheck, MessageSquare
+  Star, RotateCcw, ShieldCheck, MessageSquare,
+  ShoppingBag
 } from "lucide-react";
 import { useProducts } from "../context/ProductsContext";
 import { ContactSection } from "../components/ContactSection";
@@ -15,15 +16,17 @@ export function ProductDetailPage({
   productId,
   onBack,
   onAddToCart,
+  onBuyNow,
 }: {
   productId: string;
   onBack: () => void;
   onAddToCart: (product: any, e: React.MouseEvent, quantity?: number) => void;
+  onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('description');
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [quantity, setQuantity] = useState(1);
+  const [imageError, setImageError] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { products, loading } = useProducts();
@@ -37,10 +40,10 @@ export function ProductDetailPage({
        if (product.options && product.options.length > 0) {
          defaultOpt = product.options.find((o: any) => o.id.toString() === productId) || product.options[0];
        }
-       setSelectedOption(defaultOpt);
-       setSelectedImage(defaultOpt ? defaultOpt.image : product.image);
-       setQuantity(1);
-       window.scrollTo(0, 0);
+        setSelectedOption(defaultOpt);
+        setSelectedImage(defaultOpt ? defaultOpt.image : product.image);
+        setImageError(false);
+        window.scrollTo(0, 0);
     }
   }, [product, productId]);
 
@@ -54,7 +57,7 @@ export function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="px-[5%] mt-10 min-h-[50vh] flex flex-col items-center justify-center">
+      <div className="mt-10 min-h-[50vh] flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold mb-4">Product not found</h2>
         <button onClick={onBack} className="text-m-red hover:underline font-bold flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" /> Back to store
@@ -73,26 +76,15 @@ export function ProductDetailPage({
     const targetProduct = selectedOption ? {
       ...product,
       id: selectedOption.id,
-      name: `${product.name} (${selectedOption.specValue})`,
+      name: product.name,
       price: selectedOption.price,
       oldPrice: selectedOption.oldPrice,
-      badge: product.badge
+      badge: product.badge,
+      image: selectedOption.image || product.image,
+      options: product.options
     } : product;
 
-    const priceValue = parseFloat(targetProduct.price.replace(/[^\d.]/g, ''));
-    const total = (priceValue * quantity).toFixed(2);
-    
-    let offerInfo = "";
-    if (targetProduct.oldPrice) {
-      const oldPriceValue = parseFloat(targetProduct.oldPrice.replace(/[^\d.]/g, ''));
-      const discountPercent = ((1 - (priceValue / oldPriceValue)) * 100).toFixed(0);
-      offerInfo = `\nSpecial Offer: ${targetProduct.badge || 'Sale'} (${discountPercent}% OFF)`;
-    }
-
-    const text = encodeURIComponent(
-      `Hello! I'd like to order:\n\n*${targetProduct.name}*${offerInfo}\nPrice: ${targetProduct.price}\nQuantity: ${quantity}\n*Total: ${total} DH*`
-    );
-    window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
+    onBuyNow(targetProduct, e);
   };
 
   const scrollSimilar = (direction: 'left' | 'right') => {
@@ -111,16 +103,26 @@ export function ProductDetailPage({
     <motion.div 
       initial="hidden"
       animate="visible"
-      className="bg-white dark:bg-m-bg transition-colors duration-300 min-h-screen mt-8"
+      className="bg-white dark:bg-m-bg transition-colors duration-300 min-h-screen mt-8 px-[5%]"
     >
-      <div className="px-[5%] mb-20 max-w-[1400px] mx-auto">
+      <div className="mb-20  mx-auto">
         <motion.div 
           variants={staggerContainer}
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20"
         >
           {/* LEFT: Image Gallery */}
-          <motion.div variants={fadeInUp} className="space-y-6">
-            <div className="aspect-square bg-m-border/10 rounded-[32px] p-10 flex items-center justify-center relative group overflow-hidden border border-m-border/50">
+          <motion.div variants={fadeInUp} className="space-y-6 flex items-center justify-center w-full">
+            <div className={`aspect-square w-[90%] ${(!selectedImage || imageError) ? "bg-gradient-to-br from-m-card to-m-bg" : "bg-white"} rounded-[32px] p-4 flex items-center justify-center relative group overflow-hidden border border-m-border/50`}>
+              {(!selectedImage || imageError) ? (
+                <div className="flex flex-col items-center justify-center p-10 text-center select-none bg-gradient-to-br from-m-card to-m-bg w-full h-full rounded-[24px]">
+                  <div className="w-16 h-16 rounded-3xl bg-m-border/40 flex items-center justify-center mb-4 text-m-ink-muted">
+                    <ShoppingBag className="h-8 w-8 stroke-[1.5]" />
+                  </div>
+                  <span className="text-[14px] font-bold text-m-ink-muted uppercase tracking-wider">
+                    No Image Available
+                  </span>
+                </div>
+              ) : (
                 <motion.img 
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -128,14 +130,16 @@ export function ProductDetailPage({
                   key={selectedImage}
                   src={selectedImage} 
                   alt={product.name} 
-                  className="max-h-full max-w-full object-contain drop-shadow-2xl"
+                  onError={() => setImageError(true)}
+                  className="w-[80%] h-auto object-contain"
                 />
+              )}
 
-                {product.badge && (
-                  <div className="absolute top-6 left-6 bg-m-red text-white font-bold text-[12px] px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
-                    {product.badge}
-                  </div>
-                )}
+              {product.badge && (
+                <div className="absolute top-6 left-6 bg-m-red text-white font-bold text-[12px] px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
+                  {product.badge}
+                </div>
+              )}
             </div>
 
             {/* Thumbnails */}
@@ -176,7 +180,7 @@ export function ProductDetailPage({
 
             <div className="space-y-8 mb-12">
                {/* Options Selector */}
-               {product.options && product.options.length > 0 && (
+               {product.options && product.options.length > 1 && (
                  <div className="mb-4">
                    <h3 className="text-[13px] font-black uppercase tracking-wider text-m-ink-muted mb-3">
                      Select Specification
@@ -191,6 +195,7 @@ export function ProductDetailPage({
                              setSelectedOption(opt);
                              if (opt.image) {
                                setSelectedImage(opt.image);
+                               setImageError(false);
                              }
                            }}
                            className={`px-5 py-3 rounded-[16px] border-2 font-bold text-[14px] transition-all cursor-pointer ${
@@ -207,47 +212,22 @@ export function ProductDetailPage({
                  </div>
                )}
 
-               {/* Quantity & Actions */}
-               <div className="flex flex-col sm:flex-row gap-6 items-center">
-                  <div className="flex items-center border-2 border-m-border rounded-full p-1 bg-m-card h-[60px]">
-                     <button 
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors cursor-pointer"
-                     >
-                        <Minus className="h-4 w-4" />
-                     </button>
-                     <span className="w-12 text-center font-bold text-[20px]">{quantity}</span>
-                     <button 
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-m-bg transition-colors cursor-pointer"
-                     >
-                        <Plus className="h-4 w-4" />
-                     </button>
-                  </div>
-
-                  <div className="flex flex-1 w-full gap-4 h-[60px]">
-                    <button 
-                      onClick={handleBuyNow}
-                      className="flex-[2] bg-m-red hover:bg-[#a11f24] text-white rounded-full font-black text-[16px] transition-all hover:scale-[1.02] shadow-xl shadow-m-red/20 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer"
-                    >
-                      Buy Now
-                    </button>
-                    <button 
-                      onClick={(e) => {
-                        const targetProduct = selectedOption ? {
-                          ...product,
-                          id: selectedOption.id,
-                          name: `${product.name} (${selectedOption.specValue})`,
-                          price: selectedOption.price,
-                          image: selectedOption.image || product.image
-                        } : product;
-                        onAddToCart(targetProduct, e, quantity);
-                      }}
-                      className="flex-[1] border-2 border-m-ink rounded-full font-black text-[16px] transition-all hover:scale-[1.02] flex items-center justify-center gap-2 hover:bg-m-ink hover:text-m-bg cursor-pointer"
-                    >
-                      <ShoppingCart className="h-5 w-5" />
-                    </button>
-                  </div>
+               {/* Actions */}
+               <div className="flex flex-col sm:flex-row gap-4 w-full">
+                 <button 
+                   onClick={handleBuyNow}
+                   className="flex-1 h-[60px] bg-m-red hover:bg-m-red/90 text-white rounded-full font-black text-[16px] transition-all hover:scale-[1.02] shadow-xl shadow-m-red/20 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer"
+                 >
+                   <ShoppingBag className="h-5 w-5" />
+                   <span>Buy Now</span>
+                 </button>
+                 <button 
+                   onClick={(e) => onAddToCart(product, e)}
+                   className="flex-1 h-[60px] border-2 border-m-ink text-m-ink hover:bg-m-ink hover:text-m-card rounded-full font-black text-[16px] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                 >
+                   <ShoppingCart className="h-5 w-5" />
+                   <span>Add to Cart</span>
+                 </button>
                </div>
             </div>
 
@@ -277,8 +257,8 @@ export function ProductDetailPage({
       </div>
 
       {/* Tabs Section */}
-      <div className="px-[5%] py-24 bg-m-bg/50 border-y border-m-border">
-          <div className="max-w-4xl mx-auto">
+      <div className="py-24 bg-m-bg/50 border-y border-m-border">
+          <div className="max-w-4xl">
              <div className="flex justify-center gap-8 md:gap-16 border-b border-m-border mb-12">
                 {['description', 'specs', 'reviews'].map(tab => (
                   <button 
@@ -339,7 +319,7 @@ export function ProductDetailPage({
 
       {/* Similar Products */}
       {relatedProducts.length > 0 && (
-        <div className="px-[5%] py-24 max-w-[1400px] mx-auto">
+        <div className="py-24">
             <div className="flex justify-between items-center mb-12">
                <h2 className="text-[32px] font-black text-m-ink">Discover More</h2>
                <div className="flex gap-3">
@@ -369,15 +349,15 @@ export function ProductDetailPage({
                     navigate(`/product/${p.id}`);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className="min-w-[280px] md:min-w-[320px] group cursor-pointer"
+                  className="w-[280px] group cursor-pointer"
                 >
-                   <div className="aspect-[4/5] bg-m-bg rounded-[32px] p-8 mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">
+                   <div className="aspect-[3/4] bg-white rounded-[32px] mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">
                       <img src={p.image} alt={p.name} className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-m-ink shadow-inner opacity-0 group-hover:opacity-10 transition-opacity" />
+                      <div className="absolute top-4 right-4 bg-m-red/20 rounded-full px-3 py-1 text-[13px] text-m-red font-bold uppercase tracking-widest mb-2">{p.category}</div>
                    </div>
-                   <div className="text-[13px] text-m-red font-bold uppercase tracking-widest mb-2">{p.category}</div>
-                   <h3 className="font-bold text-[20px] text-m-ink mb-2 group-hover:text-m-red transition-colors line-clamp-1">{p.name}</h3>
-                   <div className="font-black text-[22px] text-m-ink">{p.price}</div>
+                   <h3 className="font-bold text-[20px] text-m-ink mb-2 transition-colors line-clamp-1">{p.name}</h3>
+                   <div className="font-black text-[22px] text-m-red">{p.price}</div>
                 </div>
               ))}
             </div>

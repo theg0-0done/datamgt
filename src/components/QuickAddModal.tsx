@@ -7,9 +7,10 @@ interface QuickAddModalProps {
   onClose: () => void;
   product: any;
   onAddToCart: (product: any, e: React.MouseEvent, quantity: number) => void;
+  onBuyNow: (product: any, e: React.MouseEvent) => void;
 }
 
-export function QuickAddModal({ isOpen, onClose, product, onAddToCart }: QuickAddModalProps) {
+export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow }: QuickAddModalProps) {
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
 
@@ -61,27 +62,16 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart }: QuickAd
     const targetProduct = currentOption ? {
       ...product,
       id: currentOption.id,
-      name: `${product.name} (${currentOption.specValue})`,
+      name: product.name,
       price: currentOption.price,
       oldPrice: currentOption.oldPrice,
-      badge: product.badge
+      badge: product.badge,
+      image: currentOption.image || product.image,
+      options: product.options
     } : product;
 
-    const priceValue = parseFloat(targetProduct.price.replace(/[^\d.]/g, ''));
-    const total = (priceValue * quantity).toFixed(2);
-    
-    let offerInfo = "";
-    if (targetProduct.oldPrice) {
-      const oldPriceValue = parseFloat(targetProduct.oldPrice.replace(/[^\d.]/g, ''));
-      const discountPercent = ((1 - (priceValue / oldPriceValue)) * 100).toFixed(0);
-      offerInfo = `\nSpecial Offer: ${targetProduct.badge || 'Sale'} (${discountPercent}% OFF)`;
-    }
-
-    const text = encodeURIComponent(
-      `Hello! I'd like to order:\n\n*${targetProduct.name}*${offerInfo}\nPrice: ${targetProduct.price}\nQuantity: ${quantity}\n*Total: ${total} DH*`
-    );
-    window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
     onClose();
+    onBuyNow(targetProduct, e);
   };
 
   return (

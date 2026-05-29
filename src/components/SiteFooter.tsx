@@ -44,12 +44,12 @@ export function SiteFooter({ isDark }: { isDark: boolean }) {
              <h4 className="font-bold text-[16px] mb-6">Contact Us</h4>
              <div className="bg-m-border/50 p-4 rounded-[12px]">
                 <p className="text-m-ink-muted text-[12px] mb-2">Got Questions? Call us 24/7!</p>
-                <a href="tel:+212762895481" className="text-[20px] font-bold text-m-red block mb-4">
-                    +212 762 895 481
+                <a href="tel:+212668531517" className="text-[20px] font-bold text-m-red block mb-4">
+                    +212 668-531517
                 </a>
                 <button
-                    onClick={() => window.open('https://wa.me/212762895481', '_blank')}
-                    className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-2 rounded-[8px] font-bold text-[14px] transition-colors"
+                    onClick={() => window.open('https://wa.me/212668531517', '_blank')}
+                    className="w-full flex items-center justify-center gap-2 bg-m-red hover:bg-m-ink-muted text-white py-2 rounded-[8px] font-bold text-[14px] transition-colors"
                 >
                     <MessageCircle className="h-5 w-5" /> WhatsApp Us
                 </button>

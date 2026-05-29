@@ -86,12 +86,12 @@ export function ContactSection() {
               </div>
               <div>
                 <a
-                  href="https://wa.me/212762895481"
+                  href="https://wa.me/212668531517"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-m-ink font-bold text-[16px] hover:text-m-red transition-colors"
                 >
-                  +212 762 895 481
+                  +212 668-531517
                 </a>
                 <p className="text-m-ink-muted text-[14px]">Telefon and WhatsApp</p>
               </div>

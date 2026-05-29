@@ -7,10 +7,12 @@ import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 export function TopProducts({
   onProductClick,
   onAddToCart,
+  onBuyNow,
 }: {
   onProductClick: (id: string) => void;
   onAddToCart: (product: any, e: React.MouseEvent) => void;
   searchQuery: string;
+  onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
   const { products, loading } = useProducts();
   const displayedProducts = products.slice(0, 8);
@@ -24,23 +26,7 @@ export function TopProducts({
   }
 
   const handleBuyNow = (e: React.MouseEvent, product: any) => {
-    e.stopPropagation();
-
-    const priceValue = parseFloat(product.price.replace(/[^\d.]/g, ""));
-
-    let offerInfo = "";
-    if (product.oldPrice) {
-      const oldPriceValue = parseFloat(product.oldPrice.replace(/[^\d.]/g, ""));
-      const discountPercent = ((1 - priceValue / oldPriceValue) * 100).toFixed(
-        0,
-      );
-      offerInfo = `\nSpecial Offer: ${product.badge || "Sale"} (${discountPercent}% OFF)`;
-    }
-
-    const text = encodeURIComponent(
-      `Hello! I'd like to order:\n\n*${product.name}*${offerInfo}\nPrice: ${product.price}\nQuantity: 1\n*Total: ${product.price}*`,
-    );
-    window.open(`https://wa.me/212762895481?text=${text}`, "_blank");
+    onBuyNow(product, e);
   };
 
   return (
@@ -82,7 +68,7 @@ export function TopProducts({
             key={product.id}
             variants={fadeInUp}
             onClick={() => onProductClick(product.id.toString())}
-            className="group cursor-pointer flex flex-col bg-m-card rounded-[16px] border border-m-border overflow-hidden hover:shadow-xl transition-all duration-300 relative"
+            className="group cursor-pointer flex flex-col rounded-[16px] border border-m-border overflow-hidden hover:shadow-xl transition-all duration-300 relative"
           >
             {product.badge && (
               <span className="absolute top-[15px] left-[15px] z-10 bg-m-red text-white px-[10px] py-[4px] rounded-full text-[10px] font-bold tracking-wider uppercase tracking-tight shadow-sm">
@@ -90,11 +76,11 @@ export function TopProducts({
               </span>
             )}
 
-            <div className="relative bg-m-border/30 p-0 flex items-center justify-center overflow-hidden">
+            <div className="relative bg-white p-2 flex items-center justify-center overflow-hidden">
               <img
                 src={product.image}
                 alt={product.name}
-                className="max-w-[75%] object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-md mix-blend-multiply dark:mix-blend-normal"
+                className="max-w-[75%] object-contain group-hover:scale-110 transition-transform duration-500 mix-blend-multiply dark:mix-blend-normal"
               />
 
               <div className="absolute inset-0 bg-m-ink/5 dark:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
@@ -127,16 +113,16 @@ export function TopProducts({
                   )}
                 </div>
 
-                <div className="w-full flex justify-center items-center gap-2">
+                <div className="w-full flex justify-center items-center gap-2 mt-4">
                   <button
                     onClick={(e) => handleBuyNow(e, product)}
-                    className="w-full mt-4 bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
+                    className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
                   >
                     BUY NOW
                   </button>
                   <button
                     onClick={(e) => onAddToCart(product, e)}
-                    className="bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
+                    className="lg:hidden bg-m-red text-white p-2 rounded-full shadow-lg hover:bg-m-red hover:text-white transition-all transform hover:scale-110 active:scale-95"
                   >
                     <ShoppingCart className="h-4 w-4" />
                   </button>

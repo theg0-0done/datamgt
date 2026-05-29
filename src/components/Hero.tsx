@@ -1,7 +1,8 @@
+import React from "react";
 import { motion } from "motion/react";
 import { fadeInUp, RevealText } from "../utils/animationUtils";
 
-export function Hero() {
+export function Hero({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEvent) => void }) {
   return (
     <motion.div 
       initial="hidden"
@@ -35,14 +36,14 @@ export function Hero() {
             </motion.p>
             <motion.div variants={fadeInUp}>
               <button
-                onClick={() => {
-                  const text = encodeURIComponent(
-                    `Hello! I'm interested in the *Wireless Headphone* Flash Offer.\nOffer: 40% OFF\nQuantity: 1\n*Total: (Special Offer Price)*`,
-                  );
-                  window.open(
-                    `https://wa.me/212762895481?text=${text}`,
-                    "_blank",
-                  );
+                onClick={(e) => {
+                  onBuyNow({
+                    id: "hero-1",
+                    name: "Wireless Headphone",
+                    price: "Special Price",
+                    badge: "Flash Offer",
+                    image: "/assets/headphones.png"
+                  }, e);
                 }}
                 className="bg-white hover:bg-gray-100 text-m-red px-[30px] py-[12px] rounded-full font-bold transition-transform hover:scale-105 active:scale-95 shadow-md"
               >
