@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Plus, Minus, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, ShoppingBag, ShoppingCart } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface QuickAddModalProps {
@@ -14,6 +14,7 @@ interface QuickAddModalProps {
 export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow }: QuickAddModalProps) {
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
+  const [imageError, setImageError] = useState(false);
   const { t } = useLanguage();
 
   // Initialize selected option when product changes or modal opens
@@ -25,8 +26,14 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
         setSelectedOption(null);
       }
       setQuantity(1);
+      setImageError(false);
     }
   }, [product, isOpen]);
+
+  // Reset image error when option changes
+  useEffect(() => {
+    setImageError(false);
+  }, [selectedOption]);
 
   if (!product) return null;
 
@@ -108,11 +115,23 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
             {/* Product Summary */}
             <div className="flex gap-4 items-start mb-6">
               <div className="w-24 h-24 rounded-[16px] bg-m-bg border border-m-border flex-shrink-0 overflow-hidden relative flex items-center justify-center">
-                <img
-                  src={currentImage}
-                  alt={product.name}
-                  className="max-w-full max-h-full object-contain"
-                />
+                {!currentImage || imageError ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center select-none bg-gradient-to-br from-m-card to-m-bg p-2">
+                    <div className="w-8 h-8 rounded-xl bg-m-border/40 flex items-center justify-center mb-1 text-m-ink-muted">
+                      <ShoppingBag className="h-4 w-4 stroke-[1.5]" />
+                    </div>
+                    <span className="text-[9px] font-bold text-m-ink-muted uppercase tracking-wider">
+                      {t("products.noImage")}
+                    </span>
+                  </div>
+                ) : (
+                  <img
+                    src={currentImage}
+                    alt={product.name}
+                    onError={() => setImageError(true)}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                )}
               </div>
               <div className="flex-grow min-w-0">
                 {product.badge && (
@@ -198,19 +217,13 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="w-full">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 h-[54px] rounded-full border-2 border-m-border font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-m-card-hover transition-colors cursor-pointer"
+                className="w-full h-[54px] rounded-full bg-m-red hover:bg-m-red/90 text-white font-bold text-[15px] flex items-center justify-center gap-2 shadow-lg shadow-m-red/20 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
               >
-                <ShoppingBag className="w-5 h-5 text-m-ink" />
-                {t("quickAdd.addToCart")}
-              </button>
-              <button
-                onClick={handleBuyNow}
-                className="flex-1 h-[54px] rounded-full bg-m-red hover:bg-m-red/90 text-white font-bold text-[15px] flex items-center justify-center shadow-lg shadow-m-red/20 transition-all hover:scale-[1.02] cursor-pointer"
-              >
-                {t("quickAdd.buyNow")}
+                <ShoppingCart className="w-5 h-5" />
+                <span>{t("quickAdd.addToCart")}</span>
               </button>
             </div>
           </motion.div>

@@ -1,5 +1,33 @@
-import { X, Trash2, ArrowRight } from "lucide-react";
+import React, { useState } from "react";
+import { X, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
+
+function CartItemImage({ src, alt, noImageLabel }: { src?: string; alt: string; noImageLabel: string }) {
+  const [error, setError] = useState(false);
+  const isUnavailable = !src || error;
+
+  return (
+    <div className="w-20 h-20 bg-m-border rounded-[12px] p-2 flex-shrink-0 overflow-hidden relative flex items-center justify-center">
+      {isUnavailable ? (
+        <div className="w-full h-full flex flex-col items-center justify-center text-center select-none bg-gradient-to-br from-m-card to-m-bg p-1">
+          <div className="w-8 h-8 rounded-xl bg-m-border/40 flex items-center justify-center mb-1 text-m-ink-muted">
+            <ShoppingBag className="h-4 w-4 stroke-[1.5]" />
+          </div>
+          <span className="text-[8px] font-bold text-m-ink-muted uppercase tracking-wider line-clamp-1">
+            {noImageLabel}
+          </span>
+        </div>
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          onError={() => setError(true)}
+          className="w-full h-full object-contain"
+        />
+      )}
+    </div>
+  );
+}
 
 export function CartMenu({
   isOpen,
@@ -73,13 +101,7 @@ export function CartMenu({
             <div className="flex flex-col gap-6">
               {cart.map((item) => (
                 <div key={item.id} className="flex gap-4 border-b border-m-border pb-6 last:border-0 last:pb-0">
-                  <div className="w-20 h-20 bg-m-border rounded-[12px] p-2 flex-shrink-0">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                  <CartItemImage src={item.image} alt={item.name} noImageLabel={t("products.noImage")} />
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h4 className="font-bold text-[14px] leading-tight mb-1">

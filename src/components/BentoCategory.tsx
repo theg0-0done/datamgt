@@ -19,7 +19,7 @@ export function BentoCategory({ onCategoryClick }: { onCategoryClick: (category:
           <motion.div
             key={cat.id}
             variants={fadeInUp}
-            onClick={() => onCategoryClick(cat.title === "EarBuds" ? "Accessories" : cat.title)}
+            onClick={() => onCategoryClick("Accessoires")}
             className={`cursor-pointer group relative rounded-[32px] p-8 h-[220px] md:h-[260px] flex flex-col justify-end overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${cat.color} ${cat.colSpan}`}
           >
             {/* Background pattern/overlay for richness */}

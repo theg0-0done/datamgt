@@ -32,7 +32,14 @@ export function ProductDetailPage({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { products, loading } = useProducts();
-  const product: any = products.find((p) => p.id.toString() === productId || (p.options && p.options.some((o: any) => o.id.toString() === productId)));
+  // Prioritize matching by product ID first, to avoid collisions with variant IDs
+  const product: any = products.find((p) => p.id.toString() === productId) || 
+                       products.find((p) => p.options && p.options.some((o: any) => o.id.toString() === productId));
+
+  // Debug logs
+  console.log("URL param id:", productId);
+  console.log("Querying products with:", Number(productId));
+  console.log("Product returned:", product?.id, product?.name);
 
   const [selectedOption, setSelectedOption] = useState<any>(null);
 
@@ -182,7 +189,7 @@ export function ProductDetailPage({
 
             <div className="space-y-8 mb-12">
                {/* Options Selector */}
-               {product.options && product.options.length > 1 && (
+               {product.options && product.options.length > 0 && (
                  <div className="mb-4">
                    <h3 className="text-[13px] font-black uppercase tracking-wider text-m-ink-muted mb-3">
                       {t("productDetail.selectSpec")}
