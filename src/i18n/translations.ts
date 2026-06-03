@@ -238,7 +238,7 @@ export const translations: Record<string, any> = {
       "safeMoneyDesc": "Retour sous 30 jours",
       "support": "Support 24/7",
       "supportDesc": "Appelez-nous à tout moment",
-      "securePayment": "Paiement Sécurisé",
+      "securePayment": "2 Semaines Garantie",
       "securePaymentDesc": "100% sécurisé"
     },
     "faq": {
@@ -502,7 +502,7 @@ export const translations: Record<string, any> = {
       "safeMoneyDesc": "30 Days Return",
       "support": "24/7 Support",
       "supportDesc": "Call us anytime",
-      "securePayment": "Secure Payment",
+      "securePayment": "2 weeks Warranty",
       "securePaymentDesc": "100% secure"
     },
     "faq": {

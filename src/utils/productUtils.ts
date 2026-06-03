@@ -6,7 +6,7 @@ export interface VariantData {
   sku: string;
   attributes: Record<string, any>;
   is_default: boolean;
-  product_variant_id: number;
+  product_variant_id: number | string;
   image_urls?: string[];
 }
 
@@ -23,7 +23,7 @@ export interface ProductVariant {
 }
 
 export interface ProductOption {
-  id: number;
+  id: number | string;
   name: string; // Original full product name
   specValue: string; // Extracted specification value (e.g., "3M", "512GB", "Noir")
   price: string;

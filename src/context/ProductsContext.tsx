@@ -41,15 +41,13 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
             category,
             brand,
             base_image,
+            price,
+            quantity,
             product_variants (
-              id,
-              sku,
-              variant_label,
-              attributes,
-              price,
-              stock_quantity,
-              is_default,
-              image_urls
+              product_name,
+              options,
+              prices,
+              stocks
             )
           `,
           )
@@ -61,16 +59,52 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
 
         if (productsData && productsData.length > 0) {
           const mappedProducts = productsData.map((product: any) => {
-            // Find default variant or first variant
-            const variants = product.product_variants || [];
-            const defaultVariant = variants.find((v: any) => v.is_default) || variants[0];
-            const displayPrice = defaultVariant 
-                ? `${defaultVariant.price.toFixed(2)} MAD` 
-                : "0.00 MAD";
+            const variantsData = product.product_variants;
+            const variantsObj = Array.isArray(variantsData) ? variantsData[0] : variantsData;
 
-            const defaultVariantImages = defaultVariant && defaultVariant.image_urls && defaultVariant.image_urls.length > 0
-              ? defaultVariant.image_urls
-              : [product.base_image || "/assets/placeholder.png"];
+            const hasOptions = variantsObj && variantsObj.options && variantsObj.options.length > 0;
+
+            let displayPrice = "0.00 MAD";
+            let quantity = 0;
+            let options: any[] = [];
+
+            if (hasOptions) {
+              const opts = variantsObj.options;
+              const prices = variantsObj.prices || [];
+              const stocks = variantsObj.stocks || [];
+
+              // Map options
+              options = opts.map((opt: string, index: number) => {
+                const optPrice = prices[index] || 0;
+                const optStock = stocks[index] || 0;
+                return {
+                  id: `${product.id}-${index}`,
+                  name: product.name,
+                  specValue: opt,
+                  price: `${optPrice.toFixed(2)} MAD`,
+                  quantity: optStock,
+                  image: product.base_image || "/assets/placeholder.png",
+                  images: [product.base_image || "/assets/placeholder.png"],
+                  variantData: {
+                    sku: `${product.slug || product.id}-${opt}`,
+                    attributes: { spec_value: opt },
+                    is_default: index === 0,
+                    product_variant_id: `${product.id}-${index}`,
+                    image_urls: [product.base_image || "/assets/placeholder.png"],
+                  },
+                };
+              });
+
+              displayPrice = options[0] ? options[0].price : "0.00 MAD";
+              quantity = stocks.reduce((sum: number, s: number) => sum + s, 0);
+            } else {
+              // No options - use base product values
+              const basePrice = product.price || 0;
+              displayPrice = `${basePrice.toFixed(2)} MAD`;
+              quantity = product.quantity || 0;
+            }
+
+            const defaultImages = [product.base_image || "/assets/placeholder.png"];
 
             return {
               id: product.id,
@@ -78,36 +112,12 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
               slug: product.slug,
               category: product.category || "Uncategorized",
               price: displayPrice,
-              image: defaultVariantImages[0],
-              images: defaultVariantImages,
+              image: defaultImages[0],
+              images: defaultImages,
               colors: ["#1a1a1a", "#ffffff"],
               description: product.description,
-              quantity: variants.reduce(
-                (sum: number, v: any) => sum + v.stock_quantity,
-                0,
-              ),
-              options: variants.map((variant: any) => {
-                const variantImages = variant.image_urls && variant.image_urls.length > 0
-                  ? variant.image_urls
-                  : [product.base_image || "/assets/placeholder.png"];
-
-                return {
-                  id: variant.id,
-                  name: product.name,
-                  specValue: variant.variant_label,
-                  price: `${variant.price.toFixed(2)} MAD`,
-                  quantity: variant.stock_quantity,
-                  image: variantImages[0],
-                  images: variantImages,
-                  variantData: {
-                    sku: variant.sku,
-                    attributes: variant.attributes,
-                    is_default: variant.is_default,
-                    product_variant_id: variant.id,
-                    image_urls: variant.image_urls || [],
-                  },
-                };
-              }),
+              quantity: quantity,
+              options: options,
             };
           });
 
