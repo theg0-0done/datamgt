@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Phone, Mail, MapPin, CheckCircle, ChevronDown, Building, User, FileText, Send, HelpCircle } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function ContactPage() {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     inquiryPurpose: "",
     description: "",
@@ -19,15 +21,15 @@ export function ContactPage() {
 
   const validate = () => {
     const tempErrors: Record<string, string> = {};
-    if (!form.inquiryPurpose) tempErrors.inquiryPurpose = "Inquiry purpose is required";
-    if (!form.description) tempErrors.description = "Please select a description";
-    if (!form.fullName.trim()) tempErrors.fullName = "Full name is required";
+    if (!form.inquiryPurpose) tempErrors.inquiryPurpose = t("contact.purposeRequired");
+    if (!form.description) tempErrors.description = t("contact.descRequired");
+    if (!form.fullName.trim()) tempErrors.fullName = t("contact.nameRequired");
     if (!form.email.trim()) {
-      tempErrors.email = "Email is required";
+      tempErrors.email = t("contact.emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      tempErrors.email = "Email is invalid";
+      tempErrors.email = t("contact.emailInvalid");
     }
-    if (!form.message.trim()) tempErrors.message = "Message is required";
+    if (!form.message.trim()) tempErrors.message = t("contact.messageRequired");
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -62,13 +64,13 @@ export function ContactPage() {
       <div className="max-w-[1100px] mx-auto">
         <motion.div variants={fadeInUp} className="text-center mb-16">
           <span className="text-m-red font-black text-[13px] uppercase tracking-widest mb-3 block">
-            Get In Touch
+            {t("contact.badge")}
           </span>
           <h1 className="text-[38px] md:text-[54px] font-black text-m-ink leading-tight mb-4">
-            Let's Get In Touch
+            {t("contact.title")}
           </h1>
           <p className="text-m-ink-muted text-[16px] max-w-md mx-auto">
-            We are here to answer your questions and help you with your tech requirements.
+            {t("contact.subtitle")}
           </p>
         </motion.div>
 
@@ -87,7 +89,7 @@ export function ContactPage() {
             <div className="w-14 h-14 bg-m-red/10 rounded-full flex items-center justify-center text-m-red mb-5 flex-shrink-0">
               <Phone className="h-6 w-6" />
             </div>
-            <p className="text-m-ink font-bold text-[18px] mb-2">Call/WhatsApp</p>
+            <p className="text-m-ink font-bold text-[18px] mb-2">{t("contact.call")}</p>
             <a
               href="https://wa.me/212668531517"
               target="_blank"
@@ -106,7 +108,7 @@ export function ContactPage() {
             <div className="w-14 h-14 bg-m-red/10 rounded-full flex items-center justify-center text-m-red mb-5 flex-shrink-0">
               <Mail className="h-6 w-6" />
             </div>
-            <p className="text-m-ink font-bold text-[18px] mb-2">Email Support</p>
+            <p className="text-m-ink font-bold text-[18px] mb-2">{t("contact.emailSupport")}</p>
             <a
               href="mailto:contact@datamgt.ma"
               className="text-m-ink font-bold text-[16px] hover:text-m-red transition-colors block"
@@ -123,9 +125,9 @@ export function ContactPage() {
             <div className="w-14 h-14 bg-m-red/10 rounded-full flex items-center justify-center text-m-red mb-5 flex-shrink-0">
               <MapPin className="h-6 w-6" />
             </div>
-            <p className="text-m-ink font-bold text-[18px] mb-2">Office Location</p>
-            <p className="text-m-ink-muted text-[15px]">Rue Ibn Jaber, HABBOUNA</p>
-            <p className="text-m-ink-muted text-[14px] mt-1 opacity-70">Sefrou 31000, Morocco</p>
+            <p className="text-m-ink font-bold text-[18px] mb-2">{t("contact.officeLocation")}</p>
+            <p className="text-m-ink-muted text-[15px]">{t("contact.locationStreet")}</p>
+            <p className="text-m-ink-muted text-[14px] mt-1 opacity-70">{t("contact.locationCity")}</p>
           </motion.div>
         </motion.div>
 
@@ -142,7 +144,7 @@ export function ContactPage() {
                 exit={{ opacity: 0, y: -15 }}
               >
                 <h2 className="text-[26px] font-black text-center text-m-ink mb-10">
-                  Or fill out the form below
+                  {t("contact.orFillForm")}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -151,7 +153,7 @@ export function ContactPage() {
                     {/* Inquiry Purpose */}
                     <div className="relative">
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Inquiry Purpose <span className="text-m-red">*</span>
+                        {t("contact.purposeLabel")} <span className="text-m-red">*</span>
                       </label>
                       <div className="relative flex items-center">
                         <select
@@ -160,11 +162,11 @@ export function ContactPage() {
                           onChange={handleChange}
                           className={`w-full bg-m-card border-2 ${errors.inquiryPurpose ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer`}
                         >
-                          <option value="">Choose one option...</option>
-                          <option value="sales">Sales Inquiry</option>
-                          <option value="support">Technical Support</option>
-                          <option value="partnership">Business Partnership</option>
-                          <option value="general">General Question</option>
+                          <option value="">{t("contact.chooseOption")}</option>
+                          <option value="sales">{t("contact.optSales")}</option>
+                          <option value="support">{t("contact.optSupport")}</option>
+                          <option value="partnership">{t("contact.optPartnership")}</option>
+                          <option value="general">{t("contact.optGeneral")}</option>
                         </select>
                         <ChevronDown className="absolute right-4 h-5 w-5 text-m-ink-muted pointer-events-none" />
                       </div>
@@ -176,7 +178,7 @@ export function ContactPage() {
                     {/* Description fits you */}
                     <div className="relative">
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Description that fits you <span className="text-m-red">*</span>
+                        {t("contact.descLabel")} <span className="text-m-red">*</span>
                       </label>
                       <div className="relative flex items-center">
                         <select
@@ -185,11 +187,11 @@ export function ContactPage() {
                           onChange={handleChange}
                           className={`w-full bg-m-card border-2 ${errors.description ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer`}
                         >
-                          <option value="">Choose one option...</option>
-                          <option value="individual">Individual / Consumer</option>
-                          <option value="business">Business / Enterprise</option>
-                          <option value="reseller">Reseller / Wholesaler</option>
-                          <option value="other">Other</option>
+                          <option value="">{t("contact.chooseOption")}</option>
+                          <option value="individual">{t("contact.optIndividual")}</option>
+                          <option value="business">{t("contact.optBusiness")}</option>
+                          <option value="reseller">{t("contact.optReseller")}</option>
+                          <option value="other">{t("contact.optOther")}</option>
                         </select>
                         <ChevronDown className="absolute right-4 h-5 w-5 text-m-ink-muted pointer-events-none" />
                       </div>
@@ -203,14 +205,14 @@ export function ContactPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Full Name <span className="text-m-red">*</span>
+                        {t("contact.nameLabel")} <span className="text-m-red">*</span>
                       </label>
                       <input
                         type="text"
                         name="fullName"
                         value={form.fullName}
                         onChange={handleChange}
-                        placeholder="Enter your full name..."
+                        placeholder={t("contact.placeholderName")}
                         className={`w-full bg-m-card border-2 ${errors.fullName ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50`}
                       />
                       {errors.fullName && (
@@ -220,14 +222,14 @@ export function ContactPage() {
 
                     <div>
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Email Address <span className="text-m-red">*</span>
+                        {t("contact.emailLabel")} <span className="text-m-red">*</span>
                       </label>
                       <input
                         type="email"
                         name="email"
                         value={form.email}
                         onChange={handleChange}
-                        placeholder="Enter your email address..."
+                        placeholder={t("contact.placeholderEmail")}
                         className={`w-full bg-m-card border-2 ${errors.email ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50`}
                       />
                       {errors.email && (
@@ -240,28 +242,28 @@ export function ContactPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Organization
+                        {t("contact.orgLabel")}
                       </label>
                       <input
                         type="text"
                         name="organization"
                         value={form.organization}
                         onChange={handleChange}
-                        placeholder="Enter your organization..."
+                        placeholder={t("contact.placeholderOrg")}
                         className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50"
                       />
                     </div>
 
                     <div>
                       <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                        Phone Number
+                        {t("contact.phoneLabel")}
                       </label>
                       <input
                         type="tel"
                         name="phoneNumber"
                         value={form.phoneNumber}
                         onChange={handleChange}
-                        placeholder="Enter your phone number..."
+                        placeholder={t("contact.placeholderPhone")}
                         className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50"
                       />
                     </div>
@@ -270,14 +272,14 @@ export function ContactPage() {
                   {/* Message */}
                   <div>
                     <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2 block">
-                      Message <span className="text-m-red">*</span>
+                      {t("contact.messageLabel")} <span className="text-m-red">*</span>
                     </label>
                     <textarea
                       name="message"
                       rows={5}
                       value={form.message}
                       onChange={handleChange}
-                      placeholder="Enter your message here..."
+                      placeholder={t("contact.placeholderMsg")}
                       className={`w-full bg-m-card border-2 ${errors.message ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 resize-none`}
                     />
                     {errors.message && (
@@ -291,7 +293,7 @@ export function ContactPage() {
                       type="submit"
                       className="bg-m-red hover:bg-m-red/70 active:scale-95 text-white flex items-center justify-center gap-2 rounded-xl py-3 px-8 font-black font-sans uppercase tracking-widest text-[13px] transition-all cursor-pointer"
                     >
-                      <span>Submit Form</span>
+                      <span>{t("contact.submitBtn")}</span>
                       <span className="font-light">▷</span>
                     </button>
                   </div>
@@ -309,10 +311,10 @@ export function ContactPage() {
                   <CheckCircle className="h-10 w-10" />
                 </div>
                 <h3 className="text-[28px] font-black text-m-ink mb-4">
-                  Thank You!
+                  {t("contact.thankYou")}
                 </h3>
                 <p className="text-m-ink-muted text-[16px] max-w-md mx-auto mb-8 leading-relaxed">
-                  Your message has been sent successfully. Our team will review your inquiry and get back to you shortly.
+                  {t("contact.successMsg")}
                 </p>
                 <button
                   onClick={() => {
@@ -329,7 +331,7 @@ export function ContactPage() {
                   }}
                   className="border-2 border-m-ink text-m-ink hover:bg-m-ink hover:text-m-bg rounded-xl py-2.5 px-6 font-bold text-[14px] transition-all active:scale-95 cursor-pointer"
                 >
-                  Send Another Message
+                  {t("contact.sendAnother")}
                 </button>
               </motion.div>
             )}

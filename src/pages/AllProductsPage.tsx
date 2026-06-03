@@ -3,8 +3,9 @@ import { motion } from "motion/react";
 import { ShoppingCart, Search, ChevronLeft, ChevronRight, ShoppingBag } from "lucide-react";
 import { useProducts } from "../context/ProductsContext";
 import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
-function ProductImage({ src, alt, children }: { src?: string; alt: string; children?: React.ReactNode }) {
+function ProductImage({ src, alt, noImageLabel, children }: { src?: string; alt: string; noImageLabel: string; children?: React.ReactNode }) {
   const [error, setError] = useState(false);
   const isUnavailable = !src || error;
 
@@ -16,7 +17,7 @@ function ProductImage({ src, alt, children }: { src?: string; alt: string; child
             <ShoppingBag className="h-6 w-6 stroke-[1.5]" />
           </div>
           <span className="text-[11px] font-bold text-m-ink-muted uppercase tracking-wider">
-            No Image Available
+            {noImageLabel}
           </span>
         </div>
       ) : (
@@ -55,6 +56,7 @@ export function AllProductsPage({
   onSearchChange: (q: string) => void;
 }) {
   const { products, categories, loading } = useProducts();
+  const { t } = useLanguage();
   const ITEMS_PER_PAGE = 40;
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -120,7 +122,7 @@ export function AllProductsPage({
             <Search className="h-5 w-5 text-m-ink-muted mr-3 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder={t("products.searchPlaceholder")}
               value={externalSearchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               className="bg-transparent border-none outline-none text-[15px] font-medium w-full placeholder:text-m-ink-muted/70 text-m-ink"
@@ -214,7 +216,7 @@ export function AllProductsPage({
                     onClick={() => onProductClick(product.id.toString())}
                     className="group border border-m-border rounded-[24px] overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300"
                   >
-                    <ProductImage src={product.image} alt={product.name}>
+                    <ProductImage src={product.image} alt={product.name} noImageLabel={t("products.noImage")}>
                       {product.badge && (
                         <div className="absolute top-4 left-4">
                           <span className="bg-m-red text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-tighter shadow-sm">
@@ -258,7 +260,7 @@ export function AllProductsPage({
                             onClick={(e) => handleBuyNow(e, product)}
                             className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 md:py-3 rounded-xl font-bold text-[13px] transition-all transform active:scale-95"
                           >
-                            BUY NOW
+                            {t("common.buyNow").toUpperCase()}
                           </button>
                           <button
                             onClick={(e) => onAddToCart(product, e)}
@@ -281,10 +283,9 @@ export function AllProductsPage({
                   <div className="bg-m-bg w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Search className="h-8 w-8 text-m-ink-muted" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">No products found</h3>
-                  <p className="text-m-ink-muted">
-                    Try adjusting your filters or search query.
-                  </p>
+                  <h3 className="text-xl font-bold mb-2 px-4 max-w-md mx-auto leading-relaxed">
+                    {t("products.noProducts")}
+                  </h3>
                 </motion.div>
               )}
             </>

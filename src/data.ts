@@ -272,7 +272,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 1,
     title: "EarBuds",
-    filterCategory: "Headphones",
     subtitle: "Enjoy",
     subtitle2: "With",
     color: "bg-[#1a1a1a]",
@@ -283,7 +282,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 2,
     title: "GADGET",
-    filterCategory: "Watches",
     subtitle: "Wearable",
     subtitle2: "Series",
     color: "bg-m-yellow",
@@ -294,7 +292,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 3,
     title: "LAPTOP",
-    filterCategory: "PCs",
     subtitle: "Premium",
     subtitle2: "Apple",
     color: "bg-m-red",
@@ -305,7 +302,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 4,
     title: "CONSOLE",
-    filterCategory: "Mouses",
     subtitle: "Play",
     subtitle2: "Next Gen",
     color: "bg-[#ebebeb]",
@@ -316,7 +312,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 5,
     title: "VIRTUAL",
-    filterCategory: "TVs",
     subtitle: "Explore",
     subtitle2: "Reality",
     color: "bg-m-green",
@@ -327,7 +322,6 @@ export const BENTO_CATEGORIES = [
   {
     id: 6,
     title: "SPEAKER",
-    filterCategory: "Speaker",
     subtitle: "Bass",
     subtitle2: "Heavy",
     color: "bg-m-blue",

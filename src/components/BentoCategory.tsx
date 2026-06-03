@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { BENTO_CATEGORIES } from "../data";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function BentoCategory({ onCategoryClick }: { onCategoryClick: (category: string) => void }) {
+  const { t } = useLanguage();
+
   return (
     <div className="px-[5%] mt-12 bg-m-bg overflow-hidden">
       <motion.div 
@@ -16,7 +19,7 @@ export function BentoCategory({ onCategoryClick }: { onCategoryClick: (category:
           <motion.div
             key={cat.id}
             variants={fadeInUp}
-            onClick={() => onCategoryClick(cat.filterCategory)}
+            onClick={() => onCategoryClick(cat.title === "EarBuds" ? "Accessories" : cat.title)}
             className={`cursor-pointer group relative rounded-[32px] p-8 h-[220px] md:h-[260px] flex flex-col justify-end overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${cat.color} ${cat.colSpan}`}
           >
             {/* Background pattern/overlay for richness */}
@@ -24,19 +27,19 @@ export function BentoCategory({ onCategoryClick }: { onCategoryClick: (category:
 
             <div className="relative z-10">
               <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest opacity-80 ${cat.textColor === 'text-white' ? 'text-white' : 'text-m-ink-muted'}`}>
-                {cat.subtitle}
+                {t(`bento.${cat.subtitle}`)}
               </span>
               <h3 className={`text-[20px] md:text-[24px] font-bold leading-none mt-1 ${cat.textColor}`}>
-                {cat.subtitle2}
+                {t(`bento.${cat.subtitle2.replace(/\s+/g, '')}`)}
               </h3>
               <h2 className={`text-[40px] md:text-[50px] font-black leading-none mb-4 tracking-tighter ${cat.textColor} opacity-60 group-hover:opacity-100 transition-opacity`}>
-                {cat.title}
+                {t(`bento.${cat.title}`)}
               </h2>
               
               <button 
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[12px] font-bold w-fit transition-all duration-300 transform group-hover:scale-105 active:scale-95 bg-white/20 hover:bg-white text-white hover:text-black backdrop-blur-md`}
               >
-                Browse Collection
+                {t("bento.browse")}
               </button>
             </div>
 
@@ -51,3 +54,4 @@ export function BentoCategory({ onCategoryClick }: { onCategoryClick: (category:
     </div>
   );
 }
+

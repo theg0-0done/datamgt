@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
+import { Route, Routes, useNavigate, useSearchParams, Navigate, useParams } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SiteFooter } from "./components/SiteFooter";
 import { CartMenu } from "./components/CartMenu";
@@ -11,10 +11,46 @@ import { ContactPage } from "./pages/ContactPage";
 import { AllProductsPage } from "./pages/AllProductsPage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+
+function NavigateToDefaultLanguage() {
+  const currentPath = window.location.pathname;
+  const currentSearch = window.location.search;
+  return <Navigate to={`/fr${currentPath}${currentSearch}`} replace />;
+}
 
 function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/fr" replace />} />
+      <Route path="/:lang/*" element={<MainLayout />} />
+      <Route path="*" element={<NavigateToDefaultLanguage />} />
+    </Routes>
+  );
+}
+
+function MainLayout() {
+  const { lang } = useParams<{ lang?: string }>();
+
+  if (lang !== "fr" && lang !== "en") {
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+    // Strip dynamic prefix if it's invalid, and prepend /fr
+    const cleanPath = currentPath.replace(/^\/(?:fr|en)/, '');
+    return <Navigate to={`/fr${cleanPath}${currentSearch}`} replace />;
+  }
+
+  return (
+    <LanguageProvider>
+      <MainLayoutContent />
+    </LanguageProvider>
+  );
+}
+
+function MainLayoutContent() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { lang } = useLanguage();
 
   // Root State: Theme (localStorage)
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
@@ -66,8 +102,8 @@ function App() {
     const newParams = new URLSearchParams(searchParams);
     if (query) {
       newParams.set("q", query);
-      if (window.location.pathname !== "/products") {
-        navigate(`/products?${newParams.toString()}`);
+      if (window.location.pathname !== `/${lang}/products`) {
+        navigate(`/${lang}/products?${newParams.toString()}`);
         return;
       }
     } else {
@@ -84,8 +120,8 @@ function App() {
       newParams.set("category", category);
     }
     newParams.set("p", "1"); // reset page
-    if (window.location.pathname !== "/products") {
-      navigate(`/products?${newParams.toString()}`);
+    if (window.location.pathname !== `/${lang}/products`) {
+      navigate(`/${lang}/products?${newParams.toString()}`);
     } else {
       setSearchParams(newParams);
     }
@@ -140,12 +176,10 @@ function App() {
     if (cart.length === 0) return;
     toggleCart(false);
     setBuyNowCartItems(cart);
-    // Use first cart item as the "product" for the modal
     setBuyNowProduct(cart[0]);
   };
 
   const handleOrderComplete = () => {
-    // If it was a cart checkout, clear the cart
     if (buyNowCartItems && buyNowCartItems.length > 0) {
       setCart([]);
     }
@@ -156,12 +190,17 @@ function App() {
   };
 
   const handleProductClick = (id: string) => {
-    navigate(`/product/${id}?${searchParams.toString()}`);
+    navigate(`/${lang}/product/${id}?${searchParams.toString()}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleNavigate = (path: string) => {
-    navigate(path);
+    let targetPath = path;
+    if (!path.startsWith("/fr") && !path.startsWith("/en") && !path.startsWith("/fr/") && !path.startsWith("/en/")) {
+      const cleanPath = path.startsWith("/") ? path : `/${path}`;
+      targetPath = `/${lang}${cleanPath}`;
+    }
+    navigate(targetPath);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -177,30 +216,30 @@ function App() {
 
       <main className="flex-grow flex flex-col relative w-full">
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path=""
             element={
-              <HomePage 
+              <HomePage
                 onCategoryClick={handleCategoryChange}
                 onProductClick={handleProductClick}
                 onAddToCart={handleQuickAddOpen}
                 onBuyNow={handleBuyNowOpen}
                 searchQuery={searchQuery}
               />
-            } 
+            }
           />
-          <Route 
-            path="/about" 
-            element={<AboutPage />} 
+          <Route
+            path="about"
+            element={<AboutPage />}
           />
-          <Route 
-            path="/contact" 
-            element={<ContactPage />} 
+          <Route
+            path="contact"
+            element={<ContactPage />}
           />
-          <Route 
-            path="/products" 
+          <Route
+            path="products"
             element={
-              <AllProductsPage 
+              <AllProductsPage
                 categoryFilter={categoryFilter}
                 searchQuery={searchQuery}
                 currentPage={paginationPage}
@@ -211,15 +250,15 @@ function App() {
                 onBuyNow={handleBuyNowOpen}
                 onSearchChange={handleSearchChange}
               />
-            } 
+            }
           />
           <Route
-            path="/product/:id"
+            path="product/:id"
             element={
               <React.Fragment key={window.location.pathname}>
-                <ProductDetailPageWrapper 
-                   onAddToCart={handleQuickAddOpen}
-                   onBuyNow={handleBuyNowOpen}
+                <ProductDetailPageWrapper
+                  onAddToCart={handleQuickAddOpen}
+                  onBuyNow={handleBuyNowOpen}
                 />
               </React.Fragment>
             }
@@ -257,15 +296,13 @@ function App() {
   );
 }
 
-// Helper wrapper for the detail page to extract route parameter and history
-import { useParams } from "react-router-dom";
 function ProductDetailPageWrapper({ onAddToCart, onBuyNow }: { onAddToCart: (p: any, e: any, qty?: number) => void; onBuyNow: (p: any, e: any) => void }) {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   return (
-    <ProductDetailPage 
-      productId={id || ""} 
-      onBack={() => navigate(-1)} 
+    <ProductDetailPage
+      productId={id || ""}
+      onBack={() => navigate(-1)}
       onAddToCart={onAddToCart}
       onBuyNow={onBuyNow}
     />

@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { Star, ShoppingCart, ArrowRight } from "lucide-react";
 import { useProducts } from "../context/ProductsContext";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
+import { Link } from "react-router-dom";
 
 export function TopProducts({
   onProductClick,
@@ -15,6 +17,7 @@ export function TopProducts({
   onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
   const { products, loading } = useProducts();
+  const { lang, t } = useLanguage();
   const displayedProducts = products.slice(0, 8);
 
   if (loading) {
@@ -34,26 +37,26 @@ export function TopProducts({
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 w-full">
         <div className="w-full">
           <div className="flex flex-row justify-between items-center w-full">
-            <h2 className="flex flex-col md:flex-row gap-2 text-[28px] md:text-[34px] font-bold text-m-ink leading-tight">
-              Top Deals <span className="text-m-red">For You</span>
+            <h2 className="flex flex-row gap-2 text-[28px] md:text-[34px] font-bold text-m-ink leading-tight">
+              {t("home.topDeals")} <span className="text-m-red">{t("home.forYou")}</span>
             </h2>
-            <a
-              href="/products"
+            <Link
+              to={`/${lang}/products`}
               className="lg:hidden text-m-red font-bold flex items-center gap-2 hover:underline text-[14px]"
             >
-              View All <ArrowRight className="h-4 w-4" />
-            </a>
+              {t("home.viewAll")} <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
           <p className="text-m-ink-muted text-[14px] mt-2">
-            Handpicked premium electronics at unbeatable prices.
+            {t("home.dealsDesc")}
           </p>
         </div>
-        <a
-          href="/products"
+        <Link
+          to={`/${lang}/products`}
           className="hidden lg:flex whitespace-nowrap text-m-red font-bold items-center gap-2 hover:underline text-[14px]"
         >
-          View All Products <ArrowRight className="h-4 w-4" />
-        </a>
+          {t("home.viewAllProducts")} <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
 
       <motion.div
@@ -118,7 +121,7 @@ export function TopProducts({
                     onClick={(e) => handleBuyNow(e, product)}
                     className="w-full bg-m-ink hover:bg-m-red text-m-card py-2 rounded-lg font-bold text-[12px] transition-colors"
                   >
-                    BUY NOW
+                    {t("common.buyNow")}
                   </button>
                   <button
                     onClick={(e) => onAddToCart(product, e)}
@@ -136,10 +139,11 @@ export function TopProducts({
       {displayedProducts.length === 0 && (
         <div className="text-center py-20 text-m-ink-muted">
           <p className="text-[18px] font-medium">
-            No products found matching your search.
+            {t("home.noDeals")}
           </p>
         </div>
       )}
     </div>
   );
 }
+

@@ -22,11 +22,13 @@ import {
 } from "lucide-react";
 import {
   sendOrderConfirmationEmail,
+  saveOrderToGoogleSheets,
   generateOrderId,
   getEstimatedDeliveryDate,
   type OrderItem,
   type ShippingInfo,
 } from "../utils/emailService";
+import { useLanguage } from "../i18n/LanguageContext";
 
 interface BuyNowModalProps {
   isOpen: boolean;
@@ -53,6 +55,8 @@ export function BuyNowModal({
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
+
+  const { t, lang } = useLanguage();
 
   // Shipping form fields
   const [fullName, setFullName] = useState("");
@@ -145,23 +149,23 @@ export function BuyNowModal({
 
   const validateShipping = (): boolean => {
     if (!fullName.trim()) {
-      setErrorMsg("Please enter your full name");
+      setErrorMsg(t("checkout.nameRequired"));
       return false;
     }
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMsg("Please enter a valid email address");
+      setErrorMsg(t("checkout.emailInvalid"));
       return false;
     }
     if (!phone.trim()) {
-      setErrorMsg("Please enter your phone number");
+      setErrorMsg(t("checkout.phoneRequired"));
       return false;
     }
     if (!address.trim()) {
-      setErrorMsg("Please enter your address");
+      setErrorMsg(t("checkout.addressRequired"));
       return false;
     }
     if (!city.trim()) {
-      setErrorMsg("Please enter your city");
+      setErrorMsg(t("checkout.cityRequired"));
       return false;
     }
     return true;
@@ -174,7 +178,7 @@ export function BuyNowModal({
     setSending(true);
     try {
       const newOrderId = generateOrderId();
-      const newDeliveryDate = getEstimatedDeliveryDate();
+      const newDeliveryDate = getEstimatedDeliveryDate(lang);
       const items = getOrderItems();
       const shipping: ShippingInfo = {
         fullName: fullName.trim(),
@@ -186,22 +190,55 @@ export function BuyNowModal({
         notes: notes.trim() || undefined,
       };
 
-      await sendOrderConfirmationEmail({
+      const orderPayload = {
         orderId: newOrderId,
         items,
         totalPrice,
         shipping,
         deliveryDate: newDeliveryDate,
+      };
+
+      // 1. Save to Google Sheets (Try-catch so it won't block the checkout flow if the sheet fails)
+      try {
+        await saveOrderToGoogleSheets(orderPayload);
+      } catch (sheetErr) {
+        console.error("Failed to save to Google Sheets:", sheetErr);
+      }
+
+      // 2. Send confirmation email to the Customer (Neutral wording avoiding "Your" or "Thank you")
+      await sendOrderConfirmationEmail({
+        ...orderPayload,
+        toEmail: shipping.email,
+        subject: lang === "fr" ? `Confirmation de Commande - ${newOrderId}` : `Order Confirmation - ${newOrderId}`,
+        greeting: lang === "fr" ? `Confirmation de commande - ${shipping.fullName}` : `Order Confirmation - ${shipping.fullName}`,
+        messageIntro: lang === "fr" 
+          ? `La commande ${newOrderId} a été enregistrée et est en cours de traitement. Détails de la commande :`
+          : `Order ${newOrderId} has been registered and is currently being processed. Details of the order:`,
+        lang,
       });
+
+      // 3. Send notification email to the Admin (datamgt2023@gmail.com)
+      try {
+        await sendOrderConfirmationEmail({
+          ...orderPayload,
+          toEmail: "datamgt2023@gmail.com",
+          subject: `[Admin] Nouvelle Commande Reçue - ${newOrderId}`,
+          greeting: `Nouvelle Commande Reçue`,
+          messageIntro: `Un client a passé une nouvelle commande sur la boutique. Détails de la commande et de livraison :`,
+          lang: "fr",
+        });
+      } catch (adminEmailErr) {
+        console.error("Admin notification email failed:", adminEmailErr);
+      }
 
       setOrderId(newOrderId);
       setDeliveryDate(newDeliveryDate);
       setStep("success");
       onOrderComplete?.();
     } catch (err: any) {
-      console.error("Order email error:", err);
+      console.error("Order completion error:", err);
       setErrorMsg(
-        err?.message || "Failed to send confirmation email. Please try again.",
+        err?.message || t("checkout.failedOrder", "Failed to place your order. Please try again."),
       );
     } finally {
       setSending(false);
@@ -223,13 +260,13 @@ export function BuyNowModal({
   // Step indicator
   const steps = isCartMode
     ? [
-        { key: "shipping", label: "Shipping", icon: MapPin },
-        { key: "success", label: "Done", icon: CheckCircle },
+        { key: "shipping", label: t("checkout.shippingDetails"), icon: MapPin },
+        { key: "success", label: t("checkout.orderConfirmed"), icon: CheckCircle },
       ]
     : [
-        { key: "config", label: "Product", icon: Package },
-        { key: "shipping", label: "Shipping", icon: MapPin },
-        { key: "success", label: "Done", icon: CheckCircle },
+        { key: "config", label: t("quickAdd.title"), icon: Package },
+        { key: "shipping", label: t("checkout.shippingDetails"), icon: MapPin },
+        { key: "success", label: t("checkout.orderConfirmed"), icon: CheckCircle },
       ];
 
   const currentStepIndex = steps.findIndex((s) => s.key === step);
@@ -267,9 +304,9 @@ export function BuyNowModal({
                   </button>
                 )}
                 <h2 className="text-[20px] font-black text-m-ink">
-                  {step === "config" && "Choose Options"}
-                  {step === "shipping" && "Shipping Details"}
-                  {step === "success" && "Order Confirmed!"}
+                  {step === "config" && t("checkout.chooseOptions")}
+                  {step === "shipping" && t("checkout.shippingDetails")}
+                  {step === "success" && t("checkout.orderConfirmed")}
                 </h2>
               </div>
               <button
@@ -360,7 +397,7 @@ export function BuyNowModal({
                     {product.options && product.options.length > 0 && (
                       <div>
                         <label className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2.5 block">
-                          Select Option
+                          {t("checkout.selectOption")}
                         </label>
                         <div className="flex flex-wrap gap-2">
                           {product.options.map((opt: any) => {
@@ -387,10 +424,10 @@ export function BuyNowModal({
                     <div className="bg-m-bg/60 border border-m-border rounded-[18px] p-4 flex items-center justify-between">
                       <div>
                         <h4 className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted">
-                          Quantity
+                          {t("common.quantity")}
                         </h4>
                         <p className="text-[11px] text-m-ink-muted mt-0.5">
-                          How many items do you need?
+                          {t("checkout.quantityDesc")}
                         </p>
                       </div>
                       <div className="flex items-center border border-m-border rounded-full p-1 bg-m-card h-[44px] w-[124px] justify-between">
@@ -419,10 +456,10 @@ export function BuyNowModal({
                     {/* Total */}
                     <div className="flex items-center justify-between p-4 bg-m-red/5 border border-m-red/20 rounded-[18px]">
                       <span className="text-[14px] font-bold text-m-ink">
-                        Total
+                        {t("checkout.total")}
                       </span>
                       <span className="text-[24px] font-black text-m-red">
-                        {totalPrice} MAD
+                        {totalPrice} {t("common.currency")}
                       </span>
                     </div>
 
@@ -431,7 +468,7 @@ export function BuyNowModal({
                       onClick={handleContinue}
                       className="w-full h-[54px] rounded-full bg-m-ink hover:bg-m-red text-m-card font-black text-[15px] flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
                     >
-                      Continue
+                      {t("checkout.continue")}
                       <ArrowRight className="w-5 h-5" />
                     </button>
                   </motion.div>
@@ -451,7 +488,7 @@ export function BuyNowModal({
                     {isCartMode && (
                       <div className="p-4 bg-m-bg/60 border border-m-border rounded-[18px] mb-2">
                         <h4 className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-3">
-                          Order Summary
+                          {t("checkout.summary")}
                         </h4>
                         <div className="space-y-2 max-h-[120px] overflow-y-auto">
                           {cartItems!.map((item) => (
@@ -480,10 +517,10 @@ export function BuyNowModal({
                         </div>
                         <div className="flex justify-between items-center mt-3 pt-3 border-t border-m-border">
                           <span className="text-[13px] font-bold text-m-ink">
-                            Total
+                            {t("checkout.total")}
                           </span>
                           <span className="text-[18px] font-black text-m-red">
-                            {totalPrice} MAD
+                            {totalPrice} {t("common.currency")}
                           </span>
                         </div>
                       </div>
@@ -506,9 +543,9 @@ export function BuyNowModal({
                               : product.name}
                           </p>
                           <p className="text-[12px] text-m-ink-muted">
-                            Qty: {quantity} · Total:{" "}
+                            {t("cart.qty")} {quantity} · {t("checkout.total")} :{" "}
                             <span className="font-bold text-m-red">
-                              {totalPrice} MAD
+                              {totalPrice} {t("common.currency")}
                             </span>
                           </p>
                         </div>
@@ -522,7 +559,7 @@ export function BuyNowModal({
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                         <input
                           type="text"
-                          placeholder="Full Name *"
+                          placeholder={t("checkout.fullNamePlaceholder")}
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -534,7 +571,7 @@ export function BuyNowModal({
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                         <input
                           type="email"
-                          placeholder="Email Address *"
+                          placeholder={t("checkout.emailPlaceholder")}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -546,7 +583,7 @@ export function BuyNowModal({
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                         <input
                           type="tel"
-                          placeholder="Phone Number *"
+                          placeholder={t("checkout.phonePlaceholder")}
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -558,7 +595,7 @@ export function BuyNowModal({
                         <Home className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                         <input
                           type="text"
-                          placeholder="Street Address *"
+                          placeholder={t("checkout.addressPlaceholder")}
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
                           className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -571,7 +608,7 @@ export function BuyNowModal({
                           <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                           <input
                             type="text"
-                            placeholder="City *"
+                            placeholder={t("checkout.cityPlaceholder")}
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                             className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -581,7 +618,7 @@ export function BuyNowModal({
                           <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
                           <input
                             type="text"
-                            placeholder="Zip"
+                            placeholder={t("checkout.zipPlaceholder")}
                             value={zipCode}
                             onChange={(e) => setZipCode(e.target.value)}
                             className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
@@ -593,7 +630,7 @@ export function BuyNowModal({
                       <div className="relative">
                         <FileText className="absolute left-4 top-4 w-4 h-4 text-m-ink-muted" />
                         <textarea
-                          placeholder="Order Notes (optional)"
+                          placeholder={t("checkout.notesPlaceholder")}
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
                           rows={2}
@@ -606,9 +643,7 @@ export function BuyNowModal({
                     <div className="flex items-center gap-3 p-3 bg-m-green/5 border border-m-green/20 rounded-[14px]">
                       <Truck className="w-5 h-5 text-m-green flex-shrink-0" />
                       <p className="text-[12px] text-m-ink-muted">
-                        Estimated delivery:{" "}
-                        <span className="font-bold text-m-ink">3 days</span>{" "}
-                        after order confirmation
+                        {t("checkout.estimatedDelivery")}
                       </p>
                     </div>
 
@@ -632,12 +667,12 @@ export function BuyNowModal({
                       {sending ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          Processing...
+                          {t("checkout.processing")}
                         </>
                       ) : (
                         <>
                           <ShoppingBag className="w-5 h-5" />
-                          Make Order
+                          {t("checkout.makeOrder")}
                         </>
                       )}
                     </button>
@@ -679,10 +714,10 @@ export function BuyNowModal({
 
                     <div>
                       <h3 className="text-[22px] font-black text-m-ink mb-1">
-                        Order Placed!
+                        {t("checkout.orderPlaced")}
                       </h3>
                       <p className="text-[14px] text-m-ink-muted">
-                        A confirmation email has been sent to{" "}
+                        {t("checkout.emailSentTo")}{" "}
                         <span className="font-bold text-m-ink">{email}</span>
                       </p>
                     </div>
@@ -691,7 +726,7 @@ export function BuyNowModal({
                     <div className="bg-m-bg/60 border border-m-border rounded-[20px] p-5 text-left space-y-4">
                       <div className="flex justify-between items-center">
                         <span className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted">
-                          Order ID
+                          {t("checkout.orderId")}
                         </span>
                         <span className="text-[14px] font-bold text-m-ink bg-m-card border border-m-border px-3 py-1 rounded-full">
                           {orderId}
@@ -700,16 +735,16 @@ export function BuyNowModal({
                       <div className="h-[1px] bg-m-border" />
                       <div className="flex justify-between items-center">
                         <span className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted">
-                          Total Paid
+                          {t("checkout.totalPaid")}
                         </span>
                         <span className="text-[18px] font-black text-m-red">
-                          {totalPrice} MAD
+                          {totalPrice} {t("common.currency")}
                         </span>
                       </div>
                       <div className="h-[1px] bg-m-border" />
                       <div>
                         <span className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted block mb-1.5">
-                          Estimated Delivery
+                          {t("checkout.estimatedDeliveryTitle")}
                         </span>
                         <div className="flex items-center gap-2">
                           <Truck className="w-4 h-4 text-m-green" />
@@ -724,7 +759,7 @@ export function BuyNowModal({
                       onClick={handleClose}
                       className="w-full h-[50px] rounded-full border-2 border-m-border font-bold text-[14px] text-m-ink hover:bg-m-bg transition-colors"
                     >
-                      Continue Shopping
+                      {t("checkout.continueShopping")}
                     </button>
                   </motion.div>
                 )}

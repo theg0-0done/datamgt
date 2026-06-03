@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { Clock, MapPin, MessageCircle, Mail } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function ContactSection() {
+  const { t } = useLanguage();
+
   return (
     <div className="px-[5%] mt-20 mb-20 overflow-hidden">
       {/* Section Header */}
@@ -14,11 +17,11 @@ export function ContactSection() {
         className="text-center mb-12"
       >
         <span className="text-m-red font-bold text-[13px] uppercase tracking-widest mb-3 block">
-          Find Us
+          {t("contactSection.findUs")}
         </span>
-        <h2 className="text-[36px] font-bold text-m-ink mb-3">Contact & Location</h2>
+        <h2 className="text-[36px] font-bold text-m-ink mb-3">{t("contactSection.title")}</h2>
         <p className="text-m-ink-muted text-[16px] max-w-md mx-auto">
-          Visit our store or reach out — we're here to help every day.
+          {t("contactSection.subtitle")}
         </p>
       </motion.div>
 
@@ -51,9 +54,9 @@ export function ContactSection() {
           variants={fadeInUp}
           className="bg-m-card rounded-[24px] border border-m-border p-10 flex flex-col justify-center shadow-sm"
         >
-          <h3 className="text-[26px] font-bold text-m-ink mb-2">Get in Touch</h3>
+          <h3 className="text-[26px] font-bold text-m-ink mb-2">{t("contactSection.getInTouch")}</h3>
           <p className="text-m-ink-muted text-[15px] mb-8">
-            Come visit us in-store or send us a message on WhatsApp — we're happy to assist.
+            {t("contactSection.getInTouchDesc")}
           </p>
 
           <div className="flex flex-col gap-6">
@@ -63,7 +66,7 @@ export function ContactSection() {
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-m-ink font-bold text-[16px]">Every Day</p>
+                <p className="text-m-ink font-bold text-[16px]">{t("contactSection.everyDay")}</p>
                 <p className="text-m-ink-muted text-[14px]">09:30 – 20:00</p>
               </div>
             </div>
@@ -74,8 +77,8 @@ export function ContactSection() {
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-m-ink font-bold text-[16px]">Rue Ibn Jaber, HABBOUNA</p>
-                <p className="text-m-ink-muted text-[14px]">Sefrou 31000, Morocco</p>
+                <p className="text-m-ink font-bold text-[16px]">{t("contact.locationStreet")}</p>
+                <p className="text-m-ink-muted text-[14px]">{t("contact.locationCity")}</p>
               </div>
             </div>
 
@@ -93,7 +96,7 @@ export function ContactSection() {
                 >
                   +212 668-531517
                 </a>
-                <p className="text-m-ink-muted text-[14px]">Telefon and WhatsApp</p>
+                <p className="text-m-ink-muted text-[14px]">{t("contactSection.phoneDesc")}</p>
               </div>
             </div>
             {/* Email */}
@@ -108,7 +111,7 @@ export function ContactSection() {
                 >
                   contact@datamgt.ma
                 </a>
-                <p className="text-m-ink-muted text-[14px]">Official Email Support</p>
+                <p className="text-m-ink-muted text-[14px]">{t("contactSection.emailSupportDesc")}</p>
               </div>
             </div>
           </div>
@@ -117,3 +120,4 @@ export function ContactSection() {
     </div>
   );
 }
+

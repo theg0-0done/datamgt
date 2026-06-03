@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Plus, Minus, ShoppingBag } from "lucide-react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 interface QuickAddModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface QuickAddModalProps {
 export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow }: QuickAddModalProps) {
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
+  const { t } = useLanguage();
 
   // Initialize selected option when product changes or modal opens
   useEffect(() => {
@@ -98,7 +100,7 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-m-card-hover text-m-ink-muted hover:text-m-ink transition-colors animate-pulse-subtle"
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-m-card-hover text-m-ink-muted hover:text-m-ink transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -141,7 +143,7 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
             {product.options && product.options.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted mb-2">
-                  Select Option
+                  {t("quickAdd.selectOption")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.options.map((opt: any) => {
@@ -168,10 +170,10 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
             <div className="mb-8 bg-m-bg border border-m-border rounded-[20px] p-4 flex items-center justify-between">
               <div>
                 <h3 className="text-[12px] font-black uppercase tracking-wider text-m-ink-muted">
-                  Quantity
+                  {t("quickAdd.quantity")}
                 </h3>
                 <p className="text-[11px] text-m-ink-muted mt-0.5">
-                  Decide how many items you need
+                  {t("quickAdd.quantityDesc")}
                 </p>
               </div>
               <div className="flex items-center border border-m-border rounded-full p-1 bg-m-card h-[46px] w-[130px] justify-between">
@@ -202,13 +204,13 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
                 className="flex-1 h-[54px] rounded-full border-2 border-m-border font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-m-card-hover transition-colors cursor-pointer"
               >
                 <ShoppingBag className="w-5 h-5 text-m-ink" />
-                Add to Cart
+                {t("quickAdd.addToCart")}
               </button>
               <button
                 onClick={handleBuyNow}
                 className="flex-1 h-[54px] rounded-full bg-m-red hover:bg-m-red/90 text-white font-bold text-[15px] flex items-center justify-center shadow-lg shadow-m-red/20 transition-all hover:scale-[1.02] cursor-pointer"
               >
-                Buy Now
+                {t("quickAdd.buyNow")}
               </button>
             </div>
           </motion.div>
@@ -217,3 +219,4 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
     </AnimatePresence>
   );
 }
+

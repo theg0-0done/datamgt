@@ -1,4 +1,5 @@
 import { X, Trash2, ArrowRight } from "lucide-react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function CartMenu({
   isOpen,
@@ -13,6 +14,8 @@ export function CartMenu({
   onRemoveFromCart: (id: string) => void;
   onCheckout: () => void;
 }) {
+  const { t } = useLanguage();
+
   const calculateTotal = () => {
     return cart.reduce((total, item) => {
       const priceStr = item.price.replace(/[^0-9.]/g, "");
@@ -39,7 +42,7 @@ export function CartMenu({
       >
         <div className="p-6 border-b border-m-border flex justify-between items-center">
           <h2 className="text-[24px] font-bold flex items-center gap-2">
-            Your Cart
+            {t("cart.title")}
             <span className="bg-m-red text-white text-[12px] px-2 py-0.5 rounded-full">
               {cart.length}
             </span>
@@ -58,12 +61,12 @@ export function CartMenu({
               <div className="w-24 h-24 bg-m-border rounded-full flex items-center justify-center mb-4">
                 <Trash2 className="h-10 w-10 opacity-50" />
               </div>
-              <p className="text-[16px] font-medium">Your cart is empty.</p>
+              <p className="text-[16px] font-medium">{t("cart.empty")}</p>
               <button 
                 onClick={onClose}
                 className="mt-6 text-m-red hover:underline font-bold text-[14px]"
               >
-                Continue Shopping
+                {t("cart.continueShopping")}
               </button>
             </div>
           ) : (
@@ -88,7 +91,7 @@ export function CartMenu({
                     </div>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-[12px] font-medium opacity-70">
-                        Qty: {item.quantity}
+                        {t("cart.qty")} {item.quantity}
                       </span>
                       <button
                         onClick={() => onRemoveFromCart(item.id)}
@@ -107,17 +110,17 @@ export function CartMenu({
         {cart.length > 0 && (
           <div className="p-6 border-t border-m-border bg-gradient-to-t from-m-card to-transparent">
             <div className="flex justify-between items-center mb-6">
-              <span className="font-medium opacity-80">Subtotal</span>
-              <span className="font-bold text-[24px]">{calculateTotal()} MAD</span>
+              <span className="font-medium opacity-80">{t("cart.subtotal")}</span>
+              <span className="font-bold text-[24px]">{calculateTotal()} {t("common.currency")}</span>
             </div>
             <button 
                 onClick={onCheckout}
                 className="w-full bg-m-red hover:bg-[#a11f24] text-white py-[16px] rounded-[12px] font-bold text-[16px] transition-colors flex items-center justify-center gap-2 shadow-lg"
             >
-              Checkout <ArrowRight className="h-5 w-5" />
+              {t("cart.checkout")} <ArrowRight className="h-5 w-5" />
             </button>
             <p className="text-center text-[11px] text-m-ink-muted mt-4">
-               Taxes and shipping calculated at checkout
+               {t("cart.taxesShipping")}
             </p>
           </div>
         )}
@@ -125,3 +128,4 @@ export function CartMenu({
     </>
   );
 }
+

@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { ShieldCheck, Zap, HeadphonesIcon } from "lucide-react";
 import { fadeInUp, staggerContainer, RevealText } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function AboutPage() {
+  const { t } = useLanguage();
+
   return (
     <motion.div 
       initial="hidden"
@@ -31,15 +34,15 @@ export function AboutPage() {
               className="order-1 lg:order-2 space-y-8"
             >
                 <RevealText 
-                    text="Our Story" 
+                    text={t("about.ourStory")} 
                     className="text-[32px] md:text-[40px] font-bold leading-tight relative" 
                 />
                 <div className="space-y-6 text-m-ink-muted text-[16px] leading-relaxed">
                     <p>
-                        Founded in the heart of Sefrou, Data Management was born from a simple vision: to bridge the gap between global electronic innovation and the Moroccan consumer. We realized that finding authentic, high-quality tech gear often meant long waiting times or settling for subpar alternatives.
+                        {t("about.storyP1")}
                     </p>
                     <p>
-                        We started small, sourcing only the best headphones and smartwatches, but our commitment to quality quickly resonated with our community. Today, we offer an expansive catalog of the latest laptops, smartphones, and accessories.
+                        {t("about.storyP2")}
                     </p>
                 </div>
             </motion.div>
@@ -61,7 +64,7 @@ export function AboutPage() {
                         150+
                     </div>
                     <div className="text-[14px] font-medium tracking-widest uppercase opacity-80">
-                        Top Brands
+                        {t("about.metricBrands")}
                     </div>
                 </motion.div>
                 <motion.div variants={fadeInUp} className="pt-8 md:pt-0">
@@ -69,7 +72,7 @@ export function AboutPage() {
                         48h
                     </div>
                     <div className="text-[14px] font-medium tracking-widest uppercase opacity-80">
-                        Fastest Delivery
+                        {t("about.metricDelivery")}
                     </div>
                 </motion.div>
                 <motion.div variants={fadeInUp} className="pt-8 md:pt-0">
@@ -77,7 +80,7 @@ export function AboutPage() {
                         +25K
                     </div>
                     <div className="text-[14px] font-medium tracking-widest uppercase opacity-80">
-                        Happy Customers
+                        {t("about.metricCustomers")}
                     </div>
                 </motion.div>
                 <motion.div variants={fadeInUp} className="pt-8 md:pt-0">
@@ -85,7 +88,7 @@ export function AboutPage() {
                         24/7
                     </div>
                     <div className="text-[14px] font-medium tracking-widest uppercase opacity-80">
-                        Expert Support
+                        {t("about.metricSupport")}
                     </div>
                 </motion.div>
             </motion.div>
@@ -94,7 +97,7 @@ export function AboutPage() {
         {/* Why Choose Us */}
         <div className="mb-32">
             <motion.div variants={fadeInUp} className="text-center mb-16">
-                <h2 className="text-[32px] font-bold">Why Choose Us</h2>
+                <h2 className="text-[32px] font-bold">{t("about.whyChooseUs")}</h2>
             </motion.div>
             <motion.div 
               variants={staggerContainer}
@@ -104,27 +107,27 @@ export function AboutPage() {
                     <div className="w-20 h-20 mx-auto bg-m-red/10 rounded-full flex items-center justify-center mb-6">
                         <ShieldCheck className="w-9 h-9 text-m-red" />
                     </div>
-                    <h3 className="text-[20px] font-bold mb-4">Premium Quality</h3>
+                    <h3 className="text-[20px] font-bold mb-4">{t("about.premiumTitle")}</h3>
                     <p className="text-m-ink-muted text-[14px]">
-                        We partner directly with manufacturers to ensure every product is 100% authentic and meets global standards.
+                        {t("about.premiumDesc")}
                     </p>
                 </motion.div>
                 <motion.div variants={fadeInUp} className="text-center p-8 rounded-[24px] bg-m-card border border-m-border hover:-translate-y-2 transition-transform duration-300">
                     <div className="w-20 h-20 mx-auto bg-m-red/10 rounded-full flex items-center justify-center mb-6">
                         <Zap className="w-9 h-9 text-m-red" />
                     </div>
-                    <h3 className="text-[20px] font-bold mb-4">Express Delivery</h3>
+                    <h3 className="text-[20px] font-bold mb-4">{t("about.expressTitle")}</h3>
                     <p className="text-m-ink-muted text-[14px]">
-                        Our optimized logistics network coverage ensures your latest tech arrives at your doorstep faster than ever.
+                        {t("about.expressDesc")}
                     </p>
                 </motion.div>
                 <motion.div variants={fadeInUp} className="text-center p-8 rounded-[24px] bg-m-card border border-m-border hover:-translate-y-2 transition-transform duration-300">
                     <div className="w-20 h-20 mx-auto bg-m-red/10 rounded-full flex items-center justify-center mb-6">
                         <HeadphonesIcon className="w-9 h-9 text-m-red" />
                     </div>
-                    <h3 className="text-[20px] font-bold mb-4">Dedicated Support</h3>
+                    <h3 className="text-[20px] font-bold mb-4">{t("about.supportTitle")}</h3>
                     <p className="text-m-ink-muted text-[14px]">
-                        Our tech experts are always on standby to help you choose, setup, and troubleshoot your devices.
+                        {t("about.supportDesc")}
                     </p>
                 </motion.div>
             </motion.div>
@@ -133,7 +136,7 @@ export function AboutPage() {
         {/* Bento Grid Gallery */}
         <div className="mb-24">
             <motion.div variants={fadeInUp} className="text-center mb-16">
-                <h2 className="text-[32px] font-bold">Life at Data Management</h2>
+                <h2 className="text-[32px] font-bold">{t("about.lifeAt")}</h2>
             </motion.div>
             <motion.div 
               variants={staggerContainer}
@@ -173,3 +176,4 @@ export function AboutPage() {
     </motion.div>
   );
 }
+

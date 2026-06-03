@@ -11,6 +11,7 @@ import {
 import { useProducts } from "../context/ProductsContext";
 import { ContactSection } from "../components/ContactSection";
 import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function ProductDetailPage({
   productId,
@@ -24,6 +25,7 @@ export function ProductDetailPage({
   onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
   const navigate = useNavigate();
+  const { t, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState('description');
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [imageError, setImageError] = useState(false);
@@ -58,9 +60,9 @@ export function ProductDetailPage({
   if (!product) {
     return (
       <div className="mt-10 min-h-[50vh] flex flex-col items-center justify-center">
-        <h2 className="text-2xl font-bold mb-4">Product not found</h2>
+        <h2 className="text-2xl font-bold mb-4">{t("productDetail.notFound")}</h2>
         <button onClick={onBack} className="text-m-red hover:underline font-bold flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" /> Back to store
+            <ArrowLeft className="h-4 w-4" /> {t("productDetail.backToStore")}
         </button>
       </div>
     );
@@ -119,7 +121,7 @@ export function ProductDetailPage({
                     <ShoppingBag className="h-8 w-8 stroke-[1.5]" />
                   </div>
                   <span className="text-[14px] font-bold text-m-ink-muted uppercase tracking-wider">
-                    No Image Available
+                    {t("products.noImage")}
                   </span>
                 </div>
               ) : (
@@ -183,8 +185,8 @@ export function ProductDetailPage({
                {product.options && product.options.length > 1 && (
                  <div className="mb-4">
                    <h3 className="text-[13px] font-black uppercase tracking-wider text-m-ink-muted mb-3">
-                     Select Specification
-                   </h3>
+                      {t("productDetail.selectSpec")}
+                    </h3>
                    <div className="flex flex-wrap gap-2.5">
                      {product.options.map((opt: any) => {
                        const isSelected = selectedOption?.id === opt.id;
@@ -218,15 +220,15 @@ export function ProductDetailPage({
                    onClick={handleBuyNow}
                    className="flex-1 h-[60px] bg-m-red hover:bg-m-red/90 text-white rounded-full font-black text-[16px] transition-all hover:scale-[1.02] shadow-xl shadow-m-red/20 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest cursor-pointer"
                  >
-                   <ShoppingBag className="h-5 w-5" />
-                   <span>Buy Now</span>
+                    <ShoppingBag className="h-5 w-5" />
+                    <span>{t("productDetail.buyNow")}</span>
                  </button>
                  <button 
                    onClick={(e) => onAddToCart(product, e)}
                    className="flex-1 h-[60px] border-2 border-m-ink text-m-ink hover:bg-m-ink hover:text-m-card rounded-full font-black text-[16px] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                  >
-                   <ShoppingCart className="h-5 w-5" />
-                   <span>Add to Cart</span>
+                    <ShoppingCart className="h-5 w-5" />
+                    <span>{t("productDetail.addToCart")}</span>
                  </button>
                </div>
             </div>
@@ -237,19 +239,19 @@ export function ProductDetailPage({
                   <div className="w-12 h-12 rounded-full bg-m-red/10 flex items-center justify-center text-m-red flex-shrink-0">
                      <Truck className="h-6 w-6" />
                   </div>
-                  <div>
-                    <div className="text-[15px] font-bold">Fast Delivery</div>
-                    <div className="text-[13px] text-m-ink-muted">48h Delivery</div>
-                  </div>
+                   <div>
+                     <div className="text-[15px] font-bold">{t("productDetail.fastDelivery")}</div>
+                     <div className="text-[13px] text-m-ink-muted">{t("productDetail.fastDeliveryDesc")}</div>
+                   </div>
                </div>
                <div className="flex items-center gap-4 p-5 border border-m-border rounded-[24px] bg-m-card">
                   <div className="w-12 h-12 rounded-full bg-m-red/10 flex items-center justify-center text-m-red flex-shrink-0">
                      <RotateCcw className="h-6 w-6" />
                   </div>
-                  <div>
-                    <div className="text-[15px] font-bold">Easy Returns</div>
-                    <div className="text-[13px] text-m-ink-muted">14 Days Return</div>
-                  </div>
+                   <div>
+                     <div className="text-[15px] font-bold">{t("productDetail.easyReturns")}</div>
+                     <div className="text-[13px] text-m-ink-muted">{t("productDetail.easyReturnsDesc")}</div>
+                   </div>
                </div>
             </div>
           </motion.div>
@@ -260,16 +262,16 @@ export function ProductDetailPage({
       <div className="py-24 bg-m-bg/50 border-y border-m-border">
           <div className="max-w-4xl">
              <div className="flex justify-center gap-8 md:gap-16 border-b border-m-border mb-12">
-                {['description', 'specs', 'reviews'].map(tab => (
-                  <button 
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`pb-5 font-bold text-[17px] transition-all relative capitalize ${activeTab === tab ? 'text-m-red' : 'text-m-ink-muted hover:text-m-ink'}`}
-                  >
-                    {tab}
-                    {activeTab === tab && <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-0 w-full h-1 bg-m-red rounded-full" />}
-                  </button>
-                ))}
+                 {['description', 'specs', 'reviews'].map(tab => (
+                   <button 
+                     key={tab}
+                     onClick={() => setActiveTab(tab)}
+                     className={`pb-5 font-bold text-[17px] transition-all relative capitalize ${activeTab === tab ? 'text-m-red' : 'text-m-ink-muted hover:text-m-ink'}`}
+                   >
+                     {tab === 'description' ? t("productDetail.description") : tab === 'specs' ? t("productDetail.specifications") : t("productDetail.reviews")}
+                     {activeTab === tab && <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-0 w-full h-1 bg-m-red rounded-full" />}
+                   </button>
+                 ))}
              </div>
 
              <div className="min-h-[200px]">
@@ -277,14 +279,14 @@ export function ProductDetailPage({
                   <motion.div variants={fadeIn} initial="hidden" animate="visible" className="text-m-ink-muted text-[17px] leading-relaxed">
                      <p className="mb-8">{product.description || "The product features sophisticated engineering and elegant design. Every component has been selected for both its performance and its contribution to the overall aesthetic."}</p>
                      <div className="flex flex-col gap-6">
-                        <div className="flex gap-4 items-start">
-                           <ShieldCheck className="h-5 w-5 text-m-red flex-shrink-0 mt-1" />
-                           <p><span className="font-bold text-m-ink">Genuine Product</span> - All our stock comes directly from certified manufacturers.</p>
-                        </div>
-                        <div className="flex gap-4 items-start">
-                           <Headphones className="h-5 w-5 text-m-red flex-shrink-0 mt-1" />
-                           <p><span className="font-bold text-m-ink">Technical Support</span> - Our experts are available every day to assist you.</p>
-                        </div>
+                         <div className="flex gap-4 items-start">
+                            <ShieldCheck className="h-5 w-5 text-m-red flex-shrink-0 mt-1" />
+                            <p><span className="font-bold text-m-ink">{t("productDetail.genuineProduct")}</span> - {t("productDetail.genuineProductDesc")}</p>
+                         </div>
+                         <div className="flex gap-4 items-start">
+                            <Headphones className="h-5 w-5 text-m-red flex-shrink-0 mt-1" />
+                            <p><span className="font-bold text-m-ink">{t("productDetail.techSupport")}</span> - {t("productDetail.techSupportDesc")}</p>
+                         </div>
                      </div>
                   </motion.div>
                 )}
@@ -301,7 +303,7 @@ export function ProductDetailPage({
                            ))}
                         </div>
                      ) : (
-                        <div className="text-center py-12 text-m-ink-muted italic">Specs details coming soon.</div>
+                         <div className="text-center py-12 text-m-ink-muted italic">{t("productDetail.specsComingSoon")}</div>
                      )}
                   </motion.div>
                 )}
@@ -309,8 +311,8 @@ export function ProductDetailPage({
                 {activeTab === 'reviews' && (
                   <motion.div variants={fadeIn} initial="hidden" animate="visible" className="flex flex-col items-center justify-center py-12 opacity-60">
                      <MessageSquare className="h-12 w-12 mb-4 text-m-ink-muted" />
-                     <p className="font-bold text-m-ink">No reviews yet</p>
-                     <p className="text-[14px]">Purchase this product to leave the first review.</p>
+                      <p className="font-bold text-m-ink">{t("productDetail.noReviews")}</p>
+                      <p className="text-[14px]">{t("productDetail.noReviewsDesc")}</p>
                   </motion.div>
                 )}
              </div>
@@ -321,7 +323,7 @@ export function ProductDetailPage({
       {relatedProducts.length > 0 && (
         <div className="py-24">
             <div className="flex justify-between items-center mb-12">
-               <h2 className="text-[32px] font-black text-m-ink">Discover More</h2>
+               <h2 className="text-[32px] font-black text-m-ink">{t("productDetail.discoverMore")}</h2>
                <div className="flex gap-3">
                   <button 
                   onClick={() => scrollSimilar('left')}
@@ -346,12 +348,12 @@ export function ProductDetailPage({
                 <div 
                   key={p.id}
                   onClick={() => {
-                    navigate(`/product/${p.id}`);
+                    navigate(`/${lang}/product/${p.id}`);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className="w-[280px] group cursor-pointer"
+                  className="group cursor-pointer"
                 >
-                   <div className="aspect-[3/4] bg-white rounded-[32px] mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">
+                   <div className="aspect-[3/4] w-[280px] bg-white rounded-[32px] mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">
                       <img src={p.image} alt={p.name} className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-m-ink shadow-inner opacity-0 group-hover:opacity-10 transition-opacity" />
                       <div className="absolute top-4 right-4 bg-m-red/20 rounded-full px-3 py-1 text-[13px] text-m-red font-bold uppercase tracking-widest mb-2">{p.category}</div>

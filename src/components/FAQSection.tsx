@@ -2,28 +2,18 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
-
-const FAQS = [
-  {
-    question: "Do you offer genuine products?",
-    answer: "Yes, every single product in our catalog is 100% authentic and sourced directly from authorized manufacturers or distributors. We take quality and authenticity extremely seriously."
-  },
-  {
-    question: "How long does delivery take?",
-    answer: "We offer express 48-hour delivery for major cities. For remote areas, delivery typically takes between 3 to 5 business days. You'll receive a tracking number once your order is dispatched."
-  },
-  {
-    question: "What is your return policy?",
-    answer: "We offer a 14-day hassle-free return policy for any manufacturing defects or if the product arrives damaged. The item must be in its original packaging and condition."
-  },
-  {
-    question: "Is there a warranty on electronics?",
-    answer: "Absolutely. All electronic products come with a standard 12-month manufacturer warranty. Some premium brands offer extended warranties which will be specified on the product page."
-  }
-];
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t } = useLanguage();
+
+  const faqs = [
+    { question: t("faq.q1"), answer: t("faq.a1") },
+    { question: t("faq.q2"), answer: t("faq.a2") },
+    { question: t("faq.q3"), answer: t("faq.a3") },
+    { question: t("faq.q4"), answer: t("faq.a4") },
+  ];
 
   return (
     <section className="px-[5%] py-24 bg-m-bg overflow-hidden">
@@ -35,18 +25,18 @@ export function FAQSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-[32px] md:text-[42px] font-black text-m-ink mb-4">FAQ</h2>
+          <h2 className="text-[32px] md:text-[42px] font-black text-m-ink mb-4">{t("faq.title")}</h2>
           <div className="w-16 h-1.5 bg-m-red mx-auto rounded-full"></div>
         </motion.div>
 
-        <motion.div 
+         <motion.div 
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           className="space-y-4"
         >
-          {FAQS.map((faq, index) => (
+          {faqs.map((faq, index) => (
             <motion.div 
               key={index}
               variants={fadeInUp}
@@ -86,3 +76,4 @@ export function FAQSection() {
     </section>
   );
 }
+

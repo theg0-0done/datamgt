@@ -1,8 +1,13 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
-export function PromoBanners({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEvent) => void }) {
+export function PromoBanners({ onBuyNow }: { onBuyNow?: (product: any, e: React.MouseEvent) => void }) {
+  const navigate = useNavigate();
+  const { lang, t } = useLanguage();
+
   return (
     <div className="px-[5%] mt-12">
       <motion.div 
@@ -21,27 +26,22 @@ export function PromoBanners({ onBuyNow }: { onBuyNow: (product: any, e: React.M
           {/* Text */}
           <div className="p-8 flex flex-col justify-center text-white z-10 flex-shrink-0 max-w-[55%] force-white-text">
             <span className="text-[11px] font-bold opacity-70 uppercase tracking-widest mb-3 block">
-              Flash Offer
+              {t("promo.flashOffer")}
             </span>
-            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white">
-              Wireless<br />Headphones
+            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white whitespace-pre-line">
+              {t("promo.headphonesTitle")}
             </h2>
             <p className="text-white/70 text-[13px] mb-5">
-              Premium sound. 40% OFF today only.
+              {t("promo.headphonesDesc")}
             </p>
             <button
-              onClick={(e) => {
-                onBuyNow({
-                  id: "promo-1",
-                  name: "Wireless Headphones",
-                  price: "Special Price",
-                  badge: "Flash Offer",
-                  image: "/assets/headphones.png"
-                }, e);
+              onClick={() => {
+                navigate(`/${lang}/products`);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="bg-white hover:bg-gray-100 text-m-red px-6 py-2.5 rounded-full font-bold text-[13px] w-fit shadow-md transition-transform hover:scale-105 active:scale-95"
             >
-              Shop Now
+              {t("promo.shopNow")}
             </button>
           </div>
 
@@ -67,27 +67,22 @@ export function PromoBanners({ onBuyNow }: { onBuyNow: (product: any, e: React.M
           {/* Text */}
           <div className="p-8 flex flex-col justify-center text-white z-10 flex-shrink-0 max-w-[55%]">
             <span className="text-[11px] font-bold opacity-70 uppercase tracking-widest mb-3 block">
-              Summer Sale
+              {t("promo.summerSale")}
             </span>
-            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white w-full">
-              Smart<br />Watches
+            <h2 className="text-[32px] md:text-[38px] font-bold leading-tight mb-2 text-white w-full whitespace-pre-line">
+              {t("promo.watchesTitle")}
             </h2>
             <p className="text-white/70 text-[13px] mb-5">
-              Wearable tech. 20% OFF this week.
+              {t("promo.watchesDesc")}
             </p>
             <button
-              onClick={(e) => {
-                onBuyNow({
-                  id: "promo-2",
-                  name: "Smart Watches",
-                  price: "Special Price",
-                  badge: "Summer Sale",
-                  image: "/assets/smartwatch.png"
-                }, e);
+              onClick={() => {
+                navigate(`/${lang}/products`);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="bg-white hover:bg-gray-100 text-[#2dcc70] px-6 py-2.5 rounded-full font-bold text-[13px] w-fit shadow-md transition-transform hover:scale-105 active:scale-95"
             >
-              Shop Now
+              {t("promo.shopNow")}
             </button>
           </div>
 
@@ -109,3 +104,4 @@ export function PromoBanners({ onBuyNow }: { onBuyNow: (product: any, e: React.M
     </div>
   );
 }
+

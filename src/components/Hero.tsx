@@ -1,8 +1,13 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import { fadeInUp, RevealText } from "../utils/animationUtils";
+import { useLanguage } from "../i18n/LanguageContext";
 
-export function Hero({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEvent) => void }) {
+export function Hero({ onBuyNow }: { onBuyNow?: (product: any, e: React.MouseEvent) => void }) {
+  const navigate = useNavigate();
+  const { lang, t } = useLanguage();
+
   return (
     <motion.div 
       initial="hidden"
@@ -11,18 +16,18 @@ export function Hero({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEven
       id="home" 
       className="px-[5%] mt-6 scroll-mt-[100px]"
     >
-      <div className="relative w-full bg-m-red rounded-[24px] shadow-[0_10px_30px_rgba(193,39,45,0.2)] relative min-h-[450px] flex items-center">
+      <div className="relative w-full bg-m-red rounded-[24px] shadow-[0_10px_30px_rgba(193,39,45,0.2)] min-h-[450px] flex items-center">
         <div className="relative w-full">
           <div className="p-6 md:p-[50px] flex flex-col justify-center z-10 text-white force-white-text">
             <motion.span 
               variants={fadeInUp}
               className="bg-m-yellow text-[#1a1a1a] px-[8px] py-[2px] rounded-[4px] uppercase font-bold text-[10px] w-fit mb-[15px]"
             >
-              Flash Offer - 40% OFF
+              {t("hero.badge")}
             </motion.span>
             
             <RevealText 
-              text="Wireless Headphone" 
+              text={t("hero.title")} 
               className="font-black text-[64px] tracking-tight leading-[0.9] mb-[15px]" 
             />
 
@@ -30,24 +35,19 @@ export function Hero({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEven
               variants={fadeInUp}
               className="opacity-90 text-[18px] mb-[25px]"
             >
-              Premium sound for the modern gamer.
+              {t("hero.description")}
               <br />
-              Limited Edition Sefrou Red.
+              {t("hero.subtitle")}
             </motion.p>
             <motion.div variants={fadeInUp}>
               <button
-                onClick={(e) => {
-                  onBuyNow({
-                    id: "hero-1",
-                    name: "Wireless Headphone",
-                    price: "Special Price",
-                    badge: "Flash Offer",
-                    image: "/assets/headphones.png"
-                  }, e);
+                onClick={() => {
+                  navigate(`/${lang}/products`);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="bg-white hover:bg-gray-100 text-m-red px-[30px] py-[12px] rounded-full font-bold transition-transform hover:scale-105 active:scale-95 shadow-md"
+                className="bg-white hover:bg-gray-100 text-m-red px-[30px] py-[12px] rounded-full font-bold transition-transform hover:scale-105 active:scale-95 shadow-md uppercase"
               >
-                SHOP NOW
+                {t("common.shopNow")}
               </button>
             </motion.div>
           </div>
@@ -65,3 +65,4 @@ export function Hero({ onBuyNow }: { onBuyNow: (product: any, e: React.MouseEven
     </motion.div>
   );
 }
+

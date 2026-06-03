@@ -1,8 +1,12 @@
 import { Facebook, Instagram, MessageCircle, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 import darkLogo from "../assets/datamgt_dark_logo_png.png";
 import lightLogo from "../assets/datamgt_light_logo_png.png";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export function SiteFooter({ isDark }: { isDark: boolean }) {
+  const { lang, t } = useLanguage();
+
   return (
     <footer className="bg-m-card border-t border-m-border pt-16 pb-8">
       <div className="px-[5%]">
@@ -13,7 +17,7 @@ export function SiteFooter({ isDark }: { isDark: boolean }) {
                 <img src={isDark ? darkLogo : lightLogo} alt="Data Management Logo" className="h-[40px] w-auto object-contain" />
              </div>
              <p className="text-m-ink-muted text-[14px] leading-relaxed mb-6">
-                Your premier destination for high-end electronics and accessories in Morocco. Experience quality, delivered by Data Management.
+                {t("footer.description")}
              </p>
              <div className="flex gap-4">
                  <a href="https://www.facebook.com/datamgt.officielle/" target="__blank" className="w-10 h-10 rounded-full bg-m-border flex items-center justify-center text-m-ink hover:bg-m-red hover:text-white transition-colors">
@@ -30,20 +34,20 @@ export function SiteFooter({ isDark }: { isDark: boolean }) {
 
           {/* Links Col 1 */}
           <div>
-            <h4 className="font-bold text-[16px] mb-6">Quick Links</h4>
+            <h4 className="font-bold text-[16px] mb-6">{t("footer.quickLinks")}</h4>
             <ul className="flex flex-col gap-3 text-[14px] text-m-ink-muted">
-                <li><a href="/" className="hover:text-m-red hover:font-bold transition-colors">Home</a></li>
-                <li><a href="/about" className="hover:text-m-red hover:font-bold transition-colors">About</a></li>
-                <li><a href="/products" className="hover:text-m-red hover:font-bold transition-colors">All Products</a></li>
+                <li><Link to={`/${lang}`} className="hover:text-m-red hover:font-bold transition-colors">{t("navbar.home")}</Link></li>
+                <li><Link to={`/${lang}/about`} className="hover:text-m-red hover:font-bold transition-colors">{t("navbar.about")}</Link></li>
+                <li><Link to={`/${lang}/products`} className="hover:text-m-red hover:font-bold transition-colors">{t("navbar.products")}</Link></li>
                 <li><a href="#faq" className="hover:text-m-red hover:font-bold transition-colors">FAQ</a></li>
             </ul>
           </div>
 
           {/* Contact Col */}
           <div>
-             <h4 className="font-bold text-[16px] mb-6">Contact Us</h4>
+             <h4 className="font-bold text-[16px] mb-6">{t("footer.contactUs")}</h4>
              <div className="bg-m-border/50 p-4 rounded-[12px]">
-                <p className="text-m-ink-muted text-[12px] mb-2">Got Questions? Call us 24/7!</p>
+                <p className="text-m-ink-muted text-[12px] mb-2">{t("footer.gotQuestions")}</p>
                 <a href="tel:+212668531517" className="text-[20px] font-bold text-m-red block mb-4">
                     +212 668-531517
                 </a>
@@ -51,7 +55,7 @@ export function SiteFooter({ isDark }: { isDark: boolean }) {
                     onClick={() => window.open('https://wa.me/212668531517', '_blank')}
                     className="w-full flex items-center justify-center gap-2 bg-m-red hover:bg-m-ink-muted text-white py-2 rounded-[8px] font-bold text-[14px] transition-colors"
                 >
-                    <MessageCircle className="h-5 w-5" /> WhatsApp Us
+                    <MessageCircle className="h-5 w-5" /> {t("footer.whatsappUs")}
                 </button>
              </div>
           </div>
@@ -59,7 +63,7 @@ export function SiteFooter({ isDark }: { isDark: boolean }) {
 
         <div className="border-t border-m-border pt-8 flex justify-center items-center gap-4">
             <p className="text-m-ink-muted text-[14px]">
-                © {new Date().getFullYear()} Data Management. All rights reserved.
+                © {new Date().getFullYear()} Data Management. {t("footer.rightsReserved")}
             </p>
         </div>
       </div>
