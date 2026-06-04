@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Phone, Mail, MapPin, CheckCircle, ChevronDown, Building, User, FileText, Send, HelpCircle } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 import { useLanguage } from "../i18n/LanguageContext";
+import { sendContactInquiryEmail } from "../utils/emailService";
 
 export function ContactPage() {
   const { t } = useLanguage();
@@ -17,6 +18,8 @@ export function ContactPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
@@ -47,15 +50,33 @@ export function ContactPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      // Simulate submission
-      setSubmitted(true);
+      setIsSending(true);
+      setSubmitError(null);
+      try {
+        await sendContactInquiryEmail({
+          fullName: form.fullName,
+          email: form.email,
+          phoneNumber: form.phoneNumber,
+          organization: form.organization,
+          inquiryPurpose: form.inquiryPurpose,
+          description: form.description,
+          message: form.message,
+        });
+        setSubmitted(true);
+      } catch (err) {
+        console.error("Error sending contact inquiry:", err);
+        setSubmitError(t("contact.failedSend"));
+      } finally {
+        setIsSending(false);
+      }
     }
   };
 
   return (
+
     <motion.div
       initial="hidden"
       animate="visible"
@@ -160,7 +181,8 @@ export function ContactPage() {
                           name="inquiryPurpose"
                           value={form.inquiryPurpose}
                           onChange={handleChange}
-                          className={`w-full bg-m-card border-2 ${errors.inquiryPurpose ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer`}
+                          disabled={isSending}
+                          className={`w-full bg-m-card border-2 ${errors.inquiryPurpose ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer disabled:opacity-60`}
                         >
                           <option value="">{t("contact.chooseOption")}</option>
                           <option value="sales">{t("contact.optSales")}</option>
@@ -185,7 +207,8 @@ export function ContactPage() {
                           name="description"
                           value={form.description}
                           onChange={handleChange}
-                          className={`w-full bg-m-card border-2 ${errors.description ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer`}
+                          disabled={isSending}
+                          className={`w-full bg-m-card border-2 ${errors.description ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 pr-10 text-[14px] font-medium text-m-ink outline-none appearance-none transition-all cursor-pointer disabled:opacity-60`}
                         >
                           <option value="">{t("contact.chooseOption")}</option>
                           <option value="individual">{t("contact.optIndividual")}</option>
@@ -212,8 +235,9 @@ export function ContactPage() {
                         name="fullName"
                         value={form.fullName}
                         onChange={handleChange}
+                        disabled={isSending}
                         placeholder={t("contact.placeholderName")}
-                        className={`w-full bg-m-card border-2 ${errors.fullName ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50`}
+                        className={`w-full bg-m-card border-2 ${errors.fullName ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 disabled:opacity-60`}
                       />
                       {errors.fullName && (
                         <p className="text-m-red text-[11px] font-bold mt-1.5">{errors.fullName}</p>
@@ -229,8 +253,9 @@ export function ContactPage() {
                         name="email"
                         value={form.email}
                         onChange={handleChange}
+                        disabled={isSending}
                         placeholder={t("contact.placeholderEmail")}
-                        className={`w-full bg-m-card border-2 ${errors.email ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50`}
+                        className={`w-full bg-m-card border-2 ${errors.email ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 disabled:opacity-60`}
                       />
                       {errors.email && (
                         <p className="text-m-red text-[11px] font-bold mt-1.5">{errors.email}</p>
@@ -249,8 +274,9 @@ export function ContactPage() {
                         name="organization"
                         value={form.organization}
                         onChange={handleChange}
+                        disabled={isSending}
                         placeholder={t("contact.placeholderOrg")}
-                        className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50"
+                        className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 disabled:opacity-60"
                       />
                     </div>
 
@@ -263,8 +289,9 @@ export function ContactPage() {
                         name="phoneNumber"
                         value={form.phoneNumber}
                         onChange={handleChange}
+                        disabled={isSending}
                         placeholder={t("contact.placeholderPhone")}
-                        className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50"
+                        className="w-full bg-m-card border-2 border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80 rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 disabled:opacity-60"
                       />
                     </div>
                   </div>
@@ -279,26 +306,35 @@ export function ContactPage() {
                       rows={5}
                       value={form.message}
                       onChange={handleChange}
+                      disabled={isSending}
                       placeholder={t("contact.placeholderMsg")}
-                      className={`w-full bg-m-card border-2 ${errors.message ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 resize-none`}
+                      className={`w-full bg-m-card border-2 ${errors.message ? "border-m-red" : "border-m-border hover:border-m-ink-muted/50 focus:border-m-red/80"} rounded-2xl p-4 text-[14px] font-medium text-m-ink outline-none transition-all placeholder:text-m-ink-muted/50 resize-none disabled:opacity-60`}
                     />
                     {errors.message && (
                       <p className="text-m-red text-[11px] font-bold mt-1.5">{errors.message}</p>
                     )}
                   </div>
 
+                  {submitError && (
+                    <div className="p-4 bg-m-red/10 border border-m-red/20 text-m-red rounded-xl font-bold text-[14px]">
+                      {submitError}
+                    </div>
+                  )}
+
                   {/* Submit Button */}
                   <div className="flex justify-center md:justify-start pt-4">
                     <button
                       type="submit"
-                      className="bg-m-red hover:bg-m-red/70 active:scale-95 text-white flex items-center justify-center gap-2 rounded-xl py-3 px-8 font-black font-sans uppercase tracking-widest text-[13px] transition-all cursor-pointer"
+                      disabled={isSending}
+                      className={`bg-m-red hover:bg-m-red/70 active:scale-95 text-white flex items-center justify-center gap-2 rounded-xl py-3 px-8 font-black font-sans uppercase tracking-widest text-[13px] transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed`}
                     >
-                      <span>{t("contact.submitBtn")}</span>
-                      <span className="font-light">▷</span>
+                      <span>{isSending ? t("contact.sending") : t("contact.submitBtn")}</span>
+                      {!isSending && <span className="font-light">▷</span>}
                     </button>
                   </div>
                 </form>
               </motion.div>
+
             ) : (
               <motion.div
                 key="success-message"

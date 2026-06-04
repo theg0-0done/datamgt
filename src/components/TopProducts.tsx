@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Star, ShoppingCart, ArrowRight } from "lucide-react";
-import { useProducts } from "../context/ProductsContext";
+import { ShoppingCart, ArrowRight } from "lucide-react";
+import { useTopProducts } from "../context/TopProductsContext";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 import { useLanguage } from "../i18n/LanguageContext";
 import { Link } from "react-router-dom";
@@ -16,9 +16,9 @@ export function TopProducts({
   searchQuery: string;
   onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
-  const { products, loading } = useProducts();
+  const { topProducts, loading } = useTopProducts();
   const { lang, t } = useLanguage();
-  const displayedProducts = products.slice(0, 8);
+  const displayedProducts = topProducts;
 
   if (loading) {
     return (
@@ -74,7 +74,7 @@ export function TopProducts({
             className="group cursor-pointer flex flex-col rounded-[16px] border border-m-border overflow-hidden hover:shadow-xl transition-all duration-300 relative"
           >
             {product.badge && (
-              <span className="absolute top-[15px] left-[15px] z-10 bg-m-red text-white px-[10px] py-[4px] rounded-full text-[10px] font-bold tracking-wider uppercase tracking-tight shadow-sm">
+              <span className="absolute top-[15px] left-[15px] z-10 bg-m-red/20 font-bold text-m-red px-[10px] py-[4px] rounded-full text-[10px] font-bold tracking-wider uppercase tracking-tight shadow-sm">
                 {product.badge}
               </span>
             )}
@@ -109,9 +109,9 @@ export function TopProducts({
                   <div className="font-bold text-[20px] text-m-red">
                     {product.price}
                   </div>
-                  {product.oldPrice && (
+                  {product.old_price && (
                     <div className="text-[12px] text-m-ink-muted line-through mb-1">
-                      {product.oldPrice}
+                      {product.old_price}
                     </div>
                   )}
                 </div>

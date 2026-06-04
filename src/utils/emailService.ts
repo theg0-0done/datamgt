@@ -18,81 +18,43 @@ export function generateOrderId(): string {
 }
 
 /**
- * Calculate estimated delivery date: 3 days from now at 12:00 AM.
- * Returns a formatted string like "Saturday, June 14th, 2026 at 12:00 AM" (or in French)
+ * Calculate estimated delivery date: 2 days from now.
  */
 export function getEstimatedDeliveryDate(lang: string = "fr"): string {
   const now = new Date();
   const delivery = new Date(now);
-  delivery.setDate(delivery.getDate() + 3);
-  // Set to midnight (12:00 AM)
+  delivery.setDate(delivery.getDate() + 2);
   delivery.setHours(0, 0, 0, 0);
 
   if (lang === "en") {
     const dayNames = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
+      "Sunday", "Monday", "Tuesday", "Wednesday",
+      "Thursday", "Friday", "Saturday",
     ];
     const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December",
     ];
-
     const dayName = dayNames[delivery.getDay()];
     const monthName = monthNames[delivery.getMonth()];
     const day = delivery.getDate();
     const year = delivery.getFullYear();
-
-    // Add ordinal suffix (1st, 2nd, 3rd, 4th, etc.)
     const ordinal = getOrdinalSuffix(day);
-
-    return `${dayName}, ${monthName} ${day}${ordinal}, ${year} at 12:00 AM`;
+    return `${dayName}, ${monthName} ${day}${ordinal}, ${year}`;
   } else {
-    // French format
     const dayNamesFr = [
-      "Dimanche",
-      "Lundi",
-      "Mardi",
-      "Mercredi",
-      "Jeudi",
-      "Vendredi",
-      "Samedi",
+      "Dimanche", "Lundi", "Mardi", "Mercredi",
+      "Jeudi", "Vendredi", "Samedi",
     ];
     const monthNamesFr = [
-      "Janvier",
-      "Février",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Décembre",
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
     ];
     const dayName = dayNamesFr[delivery.getDay()];
     const monthName = monthNamesFr[delivery.getMonth()];
     const day = delivery.getDate();
     const year = delivery.getFullYear();
-
-    return `${dayName} ${day} ${monthName} ${year} à 00:00`;
+    return `${dayName} ${day} ${monthName} ${year}`;
   }
 }
 
@@ -111,12 +73,9 @@ export interface OrderItem {
 
 export interface ShippingInfo {
   fullName: string;
-  email: string;
   phone: string;
   address: string;
   city: string;
-  zipCode?: string;
-  notes?: string;
 }
 
 /**
@@ -154,7 +113,7 @@ function buildOrderDetailsHtml(items: OrderItem[], totalPrice: string, lang: str
 }
 
 /**
- * Send order confirmation email via EmailJS.
+ * Send order notification email via EmailJS (admin only).
  */
 export async function sendOrderConfirmationEmail(params: {
   orderId: string;
@@ -183,7 +142,7 @@ export async function sendOrderConfirmationEmail(params: {
 
   if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
     throw new Error(
-      "EmailJS configuration is missing. Please check your .env file for VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY.",
+      "EmailJS configuration is missing. Please check your .env file.",
     );
   }
 
@@ -196,12 +155,9 @@ export async function sendOrderConfirmationEmail(params: {
     message_intro: messageIntro,
     order_id: orderId,
     customer_name: shipping.fullName,
-    customer_email: shipping.email,
     customer_phone: shipping.phone,
     customer_address: shipping.address,
     customer_city: shipping.city,
-    customer_zip: shipping.zipCode || "N/A",
-    customer_notes: shipping.notes || "None",
     order_details: orderDetailsHtml,
     total_price: `${totalPrice} MAD`,
     delivery_date: deliveryDate,
@@ -212,6 +168,7 @@ export async function sendOrderConfirmationEmail(params: {
 
 /**
  * Save order details to Google Sheets using Apps Script Web App.
+ * Sends a flat named object — keys map 1-to-1 to sheet column headers.
  */
 export async function saveOrderToGoogleSheets(orderData: {
   orderId: string;
@@ -221,21 +178,82 @@ export async function saveOrderToGoogleSheets(orderData: {
   deliveryDate: string;
 }): Promise<void> {
   const webhookUrl = (import.meta as any).env.VITE_GOOGLE_SHEETS_WEBHOOK_URL;
+
   if (!webhookUrl) {
     console.warn("Google Sheets Webhook URL is missing from .env");
     return;
   }
 
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8", // Prevents CORS preflight issues with Google Apps Script
-    },
-    body: JSON.stringify(orderData),
-  });
+  // Build a readable products string: "Samsung TV x1, Sony Headphones x2"
+  const productsString = orderData.items
+    .map((item) => `${item.name} x${item.quantity}`)
+    .join(", ");
 
-  if (!response.ok) {
-    throw new Error(`Failed to save order to Google Sheets: ${response.statusText}`);
+  // Flat payload — matches current sheet columns exactly:
+  // Order ID | Customer Name | Phone | Address | City |
+  // Products Ordered | Total Price | Estimated Delivery | Date Placed | Delivered
+  const payload = {
+    orderId:           orderData.orderId,
+    customerName:      orderData.shipping.fullName,
+    phone:             orderData.shipping.phone,
+    address:           orderData.shipping.address,
+    city:              orderData.shipping.city,
+    products:          productsString,
+    totalPrice:        `${orderData.totalPrice} MAD`,
+    estimatedDelivery: orderData.deliveryDate,
+    datePlaced:        new Date().toLocaleString("fr-MA"),
+  };
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8", // Prevents CORS preflight with Apps Script
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to save order to Google Sheets: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Error occurred while sending order to Google Sheets:", error);
+    throw error;
   }
 }
 
+export interface ContactInquiryData {
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  organization?: string;
+  inquiryPurpose: string;
+  description: string;
+  message: string;
+}
+
+/**
+ * Send contact form submission email via EmailJS.
+ */
+export async function sendContactInquiryEmail(inquiry: ContactInquiryData): Promise<void> {
+  const CONTACT_TEMPLATE_ID = (import.meta as any).env.VITE_EMAILJS_CONTACT_TEMPLATE_ID;
+
+  if (!SERVICE_ID || !CONTACT_TEMPLATE_ID || !PUBLIC_KEY) {
+    throw new Error(
+      "EmailJS contact configuration is missing. Please check your .env file."
+    );
+  }
+
+  const templateParams = {
+    fullName: inquiry.fullName,
+    email: inquiry.email,
+    phoneNumber: inquiry.phoneNumber || "N/A",
+    organization: inquiry.organization || "N/A",
+    inquiryPurpose: inquiry.inquiryPurpose,
+    description: inquiry.description,
+    message: inquiry.message,
+    to_email: "datamgt2023@gmail.com",
+  };
+
+  await emailjs.send(SERVICE_ID, CONTACT_TEMPLATE_ID, templateParams, PUBLIC_KEY);
+}

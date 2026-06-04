@@ -12,6 +12,7 @@ import { AllProductsPage } from "./pages/AllProductsPage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import { TopProductsProvider } from "./context/TopProductsContext";
 
 function NavigateToDefaultLanguage() {
   const currentPath = window.location.pathname;
@@ -42,7 +43,9 @@ function MainLayout() {
 
   return (
     <LanguageProvider>
-      <MainLayoutContent />
+      <TopProductsProvider>
+        <MainLayoutContent />
+      </TopProductsProvider>
     </LanguageProvider>
   );
 }
@@ -257,7 +260,10 @@ function MainLayoutContent() {
             element={
               <React.Fragment key={window.location.pathname}>
                 <ProductDetailPageWrapper
-                  onAddToCart={handleQuickAddOpen}
+                  onAddToCart={(p, e) => {
+                    addToCart(p, e);
+                    toggleCart(true);
+                  }}
                   onBuyNow={handleBuyNowOpen}
                 />
               </React.Fragment>

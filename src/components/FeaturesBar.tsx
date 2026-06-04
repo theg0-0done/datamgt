@@ -31,8 +31,8 @@ export function FeaturesBar() {
         <div className="flex items-center gap-[15px]">
           <ShieldCheck className="h-8 w-8 text-m-red flex-shrink-0" />
           <div>
-            <h4 className="font-bold text-[14px]">{t("features.securePayment")}</h4>
-            <p className="text-m-ink-muted text-[12px]">{t("features.securePaymentDesc")}</p>
+            <h4 className="font-bold text-[14px]">{t("features.warranty")}</h4>
+            <p className="text-m-ink-muted text-[12px]">{t("features.warrantyDesc")}</p>
           </div>
         </div>
       </div>

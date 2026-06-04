@@ -67,3 +67,32 @@
   --color-m-border: var(--color-m-border);
   --color-m-card-hover: var(--color-m-card-hover);
 }
+
+/* Custom Red Scrollbar with Hidden Buttons */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-m-red) var(--color-m-border);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-m-border);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-m-red);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a02025;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}

@@ -13,6 +13,33 @@ import { ContactSection } from "../components/ContactSection";
 import { fadeInUp, staggerContainer, fadeIn } from "../utils/animationUtils";
 import { useLanguage } from "../i18n/LanguageContext";
 
+function SimilarProductImage({ src, alt, noImageLabel }: { src?: string; alt: string; noImageLabel: string }) {
+  const [error, setError] = useState(false);
+  const isUnavailable = !src || error;
+
+  return (
+    <>
+      {isUnavailable ? (
+        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center select-none bg-gradient-to-br from-m-card to-m-bg absolute inset-0">
+          <div className="w-12 h-12 rounded-2xl bg-m-border/40 flex items-center justify-center mb-2 text-m-ink-muted">
+            <ShoppingBag className="h-6 w-6 stroke-[1.5]" />
+          </div>
+          <span className="text-[11px] font-bold text-m-ink-muted uppercase tracking-wider">
+            {noImageLabel}
+          </span>
+        </div>
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          onError={() => setError(true)}
+          className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
+        />
+      )}
+    </>
+  );
+}
+
 export function ProductDetailPage({
   productId,
   onBack,
@@ -94,6 +121,23 @@ export function ProductDetailPage({
     } : product;
 
     onBuyNow(targetProduct, e);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const targetProduct = selectedOption ? {
+      ...product,
+      id: selectedOption.id,
+      name: `${product.name} (${selectedOption.specValue})`,
+      price: selectedOption.price,
+      oldPrice: selectedOption.oldPrice,
+      badge: product.badge,
+      image: selectedOption.image || product.image,
+      options: product.options
+    } : product;
+
+    onAddToCart(targetProduct, e);
   };
 
   const scrollSimilar = (direction: 'left' | 'right') => {
@@ -231,7 +275,7 @@ export function ProductDetailPage({
                     <span>{t("productDetail.buyNow")}</span>
                  </button>
                  <button 
-                   onClick={(e) => onAddToCart(product, e)}
+                   onClick={handleAddToCart}
                    className="flex-1 h-[60px] border-2 border-m-ink text-m-ink hover:bg-m-ink hover:text-m-card rounded-full font-black text-[16px] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                  >
                     <ShoppingCart className="h-5 w-5" />
@@ -349,7 +393,7 @@ export function ProductDetailPage({
 
             <div 
               ref={scrollContainerRef}
-              className="flex gap-6 overflow-x-auto pb-10 scrollbar-hide scroll-smooth px-1"
+              className="flex gap-6 overflow-x-auto pb-10 custom-scrollbar scroll-smooth px-1"
             >
                {relatedProducts.map((p) => (
                 <div 
@@ -361,7 +405,7 @@ export function ProductDetailPage({
                   className="group cursor-pointer"
                 >
                    <div className="aspect-[3/4] w-[280px] bg-white rounded-[32px] mb-6 relative overflow-hidden flex items-center justify-center border border-m-border group-hover:shadow-2xl transition-all duration-500">
-                      <img src={p.image} alt={p.name} className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                      <SimilarProductImage src={p.image} alt={p.name} noImageLabel={t("products.noImage")} />
                       <div className="absolute inset-0 bg-m-ink shadow-inner opacity-0 group-hover:opacity-10 transition-opacity" />
                       <div className="absolute top-4 right-4 bg-m-red/20 rounded-full px-3 py-1 text-[13px] text-m-red font-bold uppercase tracking-widest mb-2">{p.category}</div>
                    </div>

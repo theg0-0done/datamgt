@@ -39,8 +39,8 @@ export const translations: Record<string, any> = {
     },
     "promo": {
       "flashOffer": "Offre Flash",
-      "headphonesTitle": "Casques\nSans Fil",
-      "headphonesDesc": "Son premium. -40% aujourd'hui seulement.",
+      "consoleTitle": "Console\nNext-Gen",
+      "consoleDesc": "Expérience ultime. -30% aujourd'hui seulement.",
       "summerSale": "Soldes d'Été",
       "watchesTitle": "Montres\nIntelligentes",
       "watchesDesc": "Technologie portable. -20% cette semaine.",
@@ -115,7 +115,9 @@ export const translations: Record<string, any> = {
       "placeholderMsg": "Entrez votre message ici...",
       "thankYou": "Merci !",
       "successMsg": "Votre message a été envoyé avec succès. Notre équipe va examiner votre demande et vous répondra sous peu.",
-      "sendAnother": "Envoyer un Autre Message"
+      "sendAnother": "Envoyer un Autre Message",
+      "sending": "Envoi en cours...",
+      "failedSend": "Échec de l'envoi du message. Veuillez réessayer plus tard."
     },
     "cart": {
       "title": "Votre Panier",
@@ -143,7 +145,7 @@ export const translations: Record<string, any> = {
       "orderNow": "Commander Maintenant",
       "processing": "Traitement en cours...",
       "successTitle": "Commande Réussie !",
-      "successDesc": "Nous vous remercions pour votre commande. Notre équipe vous contactera sous peu pour confirmer votre livraison.",
+      "successDesc": "Votre commande a bien été enregistrée. Notre équipe vous contactera pour confirmer la livraison.",
       "close": "Fermer",
       "nameRequired": "Le nom complet est requis",
       "phoneRequired": "Le numéro de téléphone est requis",
@@ -155,21 +157,19 @@ export const translations: Record<string, any> = {
       "selectOption": "Sélectionner une option",
       "quantityDesc": "De combien d'articles avez-vous besoin ?",
       "fullNamePlaceholder": "Nom complet *",
-      "emailPlaceholder": "Adresse e-mail *",
       "phonePlaceholder": "Numéro de téléphone *",
       "addressPlaceholder": "Adresse de livraison *",
       "cityPlaceholder": "Ville *",
-      "zipPlaceholder": "Code postal",
-      "notesPlaceholder": "Notes de commande (facultatif)",
-      "estimatedDelivery": "Livraison estimée : 3 jours après confirmation de la commande",
+      "estimatedDelivery": "Livraison en 2 jours après confirmation",
+      "codInfo": "Vous paierez le montant total à la réception de votre commande (paiement à la livraison).",
       "orderPlaced": "Commande passée !",
-      "emailSentTo": "Un e-mail de confirmation a été envoyé à",
       "orderId": "ID de la commande",
-      "totalPaid": "Total payé",
+      "totalPaid": "Total à payer",
       "estimatedDeliveryTitle": "Livraison estimée",
       "continueShopping": "Continuer vos achats",
-      "emailInvalid": "Veuillez entrer une adresse e-mail valide",
-      "failedOrder": "Échec de la commande. Veuillez réessayer."
+      "failedOrder": "Échec de la commande. Veuillez réessayer.",
+      "continue": "Continuer",
+      "makeOrder": "Passer la commande"
     },
     "quickAdd": {
       "title": "Ajout Rapide",
@@ -238,8 +238,8 @@ export const translations: Record<string, any> = {
       "safeMoneyDesc": "Retour sous 30 jours",
       "support": "Support 24/7",
       "supportDesc": "Appelez-nous à tout moment",
-      "securePayment": "2 Semaines Garantie",
-      "securePaymentDesc": "100% sécurisé"
+      "warranty": "Garantie 2 Semaines",
+      "warrantyDesc": "Sur tous les produits"
     },
     "faq": {
       "title": "FAQ",
@@ -303,8 +303,8 @@ export const translations: Record<string, any> = {
     },
     "promo": {
       "flashOffer": "Flash Offer",
-      "headphonesTitle": "Wireless\nHeadphones",
-      "headphonesDesc": "Premium sound. 40% OFF today only.",
+      "consoleTitle": "Next-Gen\nConsole",
+      "consoleDesc": "Ultimate experience. 30% OFF today only.",
       "summerSale": "Summer Sale",
       "watchesTitle": "Smart\nWatches",
       "watchesDesc": "Wearable tech. 20% OFF this week.",
@@ -379,7 +379,9 @@ export const translations: Record<string, any> = {
       "placeholderMsg": "Enter your message here...",
       "thankYou": "Thank You!",
       "successMsg": "Your message has been sent successfully. Our team will review your inquiry and get back to you shortly.",
-      "sendAnother": "Send Another Message"
+      "sendAnother": "Send Another Message",
+      "sending": "Sending...",
+      "failedSend": "Failed to send message. Please try again later."
     },
     "cart": {
       "title": "Your Cart",
@@ -406,8 +408,8 @@ export const translations: Record<string, any> = {
       "total": "Total:",
       "orderNow": "Order Now",
       "processing": "Processing...",
-      "successTitle": "Order Placed successfully!",
-      "successDesc": "Thank you for your order. Our team will contact you shortly to confirm your delivery.",
+      "successTitle": "Order Placed!",
+      "successDesc": "Your order has been registered. Our team will contact you to confirm delivery.",
       "close": "Close",
       "nameRequired": "Full name is required",
       "phoneRequired": "Phone number is required",
@@ -419,21 +421,19 @@ export const translations: Record<string, any> = {
       "selectOption": "Select Option",
       "quantityDesc": "How many items do you need?",
       "fullNamePlaceholder": "Full Name *",
-      "emailPlaceholder": "Email Address *",
       "phonePlaceholder": "Phone Number *",
       "addressPlaceholder": "Street Address *",
       "cityPlaceholder": "City *",
-      "zipPlaceholder": "Zip",
-      "notesPlaceholder": "Order Notes (optional)",
-      "estimatedDelivery": "Estimated delivery: 3 days after order confirmation",
+      "estimatedDelivery": "Delivery within 2 days after confirmation",
+      "codInfo": "You will pay the total amount upon receiving your order (Cash on Delivery).",
       "orderPlaced": "Order Placed!",
-      "emailSentTo": "A confirmation email has been sent to",
       "orderId": "Order ID",
-      "totalPaid": "Total Paid",
+      "totalPaid": "Total to Pay",
       "estimatedDeliveryTitle": "Estimated Delivery",
       "continueShopping": "Continue Shopping",
-      "emailInvalid": "Please enter a valid email address",
-      "failedOrder": "Failed to place your order. Please try again."
+      "failedOrder": "Failed to place your order. Please try again.",
+      "continue": "Continue",
+      "makeOrder": "Place Order"
     },
     "quickAdd": {
       "title": "Quick Add",
@@ -502,8 +502,8 @@ export const translations: Record<string, any> = {
       "safeMoneyDesc": "30 Days Return",
       "support": "24/7 Support",
       "supportDesc": "Call us anytime",
-      "securePayment": "2 weeks Warranty",
-      "securePaymentDesc": "100% secure"
+      "warranty": "2 Weeks Warranty",
+      "warrantyDesc": "On all products"
     },
     "faq": {
       "title": "FAQ",

@@ -13,16 +13,14 @@ import {
   ShoppingBag,
   User,
   Phone,
-  Mail,
   Home,
   Building,
-  Hash,
-  FileText,
   Truck,
+  CreditCard,
 } from "lucide-react";
 import {
-  sendOrderConfirmationEmail,
   saveOrderToGoogleSheets,
+  sendOrderConfirmationEmail,
   generateOrderId,
   getEstimatedDeliveryDate,
   type OrderItem,
@@ -60,12 +58,9 @@ export function BuyNowModal({
 
   // Shipping form fields
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [notes, setNotes] = useState("");
 
   // Determine if we're in cart checkout mode
   const isCartMode = !!(cartItems && cartItems.length > 0);
@@ -79,9 +74,10 @@ export function BuyNowModal({
       } else {
         setStep("config");
       }
-      setSelectedOption(
-        product?.options?.length > 0 ? product.options[0] : null,
-      );
+      const defaultOpt = product?.options?.length > 0
+        ? (product.options.find((o: any) => o.id.toString() === product.id.toString()) || product.options[0])
+        : null;
+      setSelectedOption(defaultOpt);
       setQuantity(1);
       setSending(false);
       setErrorMsg("");
@@ -152,10 +148,6 @@ export function BuyNowModal({
       setErrorMsg(t("checkout.nameRequired"));
       return false;
     }
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMsg(t("checkout.emailInvalid"));
-      return false;
-    }
     if (!phone.trim()) {
       setErrorMsg(t("checkout.phoneRequired"));
       return false;
@@ -182,12 +174,9 @@ export function BuyNowModal({
       const items = getOrderItems();
       const shipping: ShippingInfo = {
         fullName: fullName.trim(),
-        email: email.trim(),
         phone: phone.trim(),
         address: address.trim(),
         city: city.trim(),
-        zipCode: zipCode.trim() || undefined,
-        notes: notes.trim() || undefined,
       };
 
       const orderPayload = {
@@ -198,26 +187,14 @@ export function BuyNowModal({
         deliveryDate: newDeliveryDate,
       };
 
-      // 1. Save to Google Sheets (Try-catch so it won't block the checkout flow if the sheet fails)
+      // 1. Save to Google Sheets
       try {
         await saveOrderToGoogleSheets(orderPayload);
       } catch (sheetErr) {
         console.error("Failed to save to Google Sheets:", sheetErr);
       }
 
-      // 2. Send confirmation email to the Customer (Neutral wording avoiding "Your" or "Thank you")
-      await sendOrderConfirmationEmail({
-        ...orderPayload,
-        toEmail: shipping.email,
-        subject: lang === "fr" ? `Confirmation de Commande - ${newOrderId}` : `Order Confirmation - ${newOrderId}`,
-        greeting: lang === "fr" ? `Confirmation de commande - ${shipping.fullName}` : `Order Confirmation - ${shipping.fullName}`,
-        messageIntro: lang === "fr" 
-          ? `La commande ${newOrderId} a été enregistrée et est en cours de traitement. Détails de la commande :`
-          : `Order ${newOrderId} has been registered and is currently being processed. Details of the order:`,
-        lang,
-      });
-
-      // 3. Send notification email to the Admin (datamgt2023@gmail.com)
+      // 2. Send admin notification email
       try {
         await sendOrderConfirmationEmail({
           ...orderPayload,
@@ -238,7 +215,7 @@ export function BuyNowModal({
     } catch (err: any) {
       console.error("Order completion error:", err);
       setErrorMsg(
-        err?.message || t("checkout.failedOrder", "Failed to place your order. Please try again."),
+        err?.message || t("checkout.failedOrder"),
       );
     } finally {
       setSending(false);
@@ -248,12 +225,9 @@ export function BuyNowModal({
   const handleClose = () => {
     // Reset form fields on close
     setFullName("");
-    setEmail("");
     setPhone("");
     setAddress("");
     setCity("");
-    setZipCode("");
-    setNotes("");
     onClose();
   };
 
@@ -543,7 +517,7 @@ export function BuyNowModal({
                               : product.name}
                           </p>
                           <p className="text-[12px] text-m-ink-muted">
-                            {t("cart.qty")} {quantity} · {t("checkout.total")} :{" "}
+                            {t("cart.qty")} {quantity} · {t("checkout.total")}:{" "}
                             <span className="font-bold text-m-red">
                               {totalPrice} {t("common.currency")}
                             </span>
@@ -562,18 +536,6 @@ export function BuyNowModal({
                           placeholder={t("checkout.fullNamePlaceholder")}
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
-                        />
-                      </div>
-
-                      {/* Email */}
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
-                        <input
-                          type="email"
-                          placeholder={t("checkout.emailPlaceholder")}
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
                           className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
                         />
                       </div>
@@ -602,49 +564,33 @@ export function BuyNowModal({
                         />
                       </div>
 
-                      {/* City + Zip */}
-                      <div className="flex gap-3">
-                        <div className="relative flex-[2]">
-                          <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
-                          <input
-                            type="text"
-                            placeholder={t("checkout.cityPlaceholder")}
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
-                          />
-                        </div>
-                        <div className="relative flex-[1]">
-                          <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
-                          <input
-                            type="text"
-                            placeholder={t("checkout.zipPlaceholder")}
-                            value={zipCode}
-                            onChange={(e) => setZipCode(e.target.value)}
-                            className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Notes */}
+                      {/* City */}
                       <div className="relative">
-                        <FileText className="absolute left-4 top-4 w-4 h-4 text-m-ink-muted" />
-                        <textarea
-                          placeholder={t("checkout.notesPlaceholder")}
-                          value={notes}
-                          onChange={(e) => setNotes(e.target.value)}
-                          rows={2}
-                          className="w-full pl-11 pr-4 py-3 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all resize-none"
+                        <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-m-ink-muted" />
+                        <input
+                          type="text"
+                          placeholder={t("checkout.cityPlaceholder")}
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          className="w-full h-[50px] pl-11 pr-4 rounded-[14px] border-2 border-m-border bg-m-bg/40 text-m-ink text-[14px] font-medium placeholder:text-m-ink-muted/50 focus:outline-none focus:border-m-red/50 focus:bg-m-card transition-all"
                         />
                       </div>
                     </div>
 
-                    {/* Delivery info */}
-                    <div className="flex items-center gap-3 p-3 bg-m-green/5 border border-m-green/20 rounded-[14px]">
-                      <Truck className="w-5 h-5 text-m-green flex-shrink-0" />
-                      <p className="text-[12px] text-m-ink-muted">
-                        {t("checkout.estimatedDelivery")}
-                      </p>
+                    {/* Delivery + COD info banner */}
+                    <div className="rounded-[16px] border border-m-green/25 bg-m-green/5 p-4 space-y-2">
+                      <div className="flex items-center gap-3">
+                        <Truck className="w-5 h-5 text-m-green flex-shrink-0" />
+                        <p className="text-[13px] font-semibold text-m-ink">
+                          {t("checkout.estimatedDelivery")}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CreditCard className="w-5 h-5 text-m-green flex-shrink-0" />
+                        <p className="text-[13px] font-semibold text-m-ink-muted">
+                          {t("checkout.codInfo")}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Error */}
@@ -717,8 +663,7 @@ export function BuyNowModal({
                         {t("checkout.orderPlaced")}
                       </h3>
                       <p className="text-[14px] text-m-ink-muted">
-                        {t("checkout.emailSentTo")}{" "}
-                        <span className="font-bold text-m-ink">{email}</span>
+                        {t("checkout.successDesc")}
                       </p>
                     </div>
 
@@ -752,6 +697,13 @@ export function BuyNowModal({
                             {deliveryDate}
                           </span>
                         </div>
+                      </div>
+                      <div className="h-[1px] bg-m-border" />
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-m-ink-muted" />
+                        <span className="text-[13px] text-m-ink-muted">
+                          {t("checkout.codInfo")}
+                        </span>
                       </div>
                     </div>
 

@@ -21,7 +21,8 @@ export function QuickAddModal({ isOpen, onClose, product, onAddToCart, onBuyNow 
   useEffect(() => {
     if (product) {
       if (product.options && product.options.length > 0) {
-        setSelectedOption(product.options[0]);
+        const matchingOpt = product.options.find((o: any) => o.id.toString() === product.id.toString());
+        setSelectedOption(matchingOpt || product.options[0]);
       } else {
         setSelectedOption(null);
       }
