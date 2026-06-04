@@ -25,12 +25,11 @@ export function HomePage({
       <Hero onBuyNow={onBuyNow} />
       <BentoCategory onCategoryClick={onCategoryClick} />
       <FeaturesBar />
-      <PromoBanners onBuyNow={onBuyNow} />
+      <PromoBanners />
       <TopProducts
         onProductClick={onProductClick}
         onAddToCart={onAddToCart}
         onBuyNow={onBuyNow}
-        searchQuery={searchQuery}
       />
       <FAQSection />
       <ContactSection />

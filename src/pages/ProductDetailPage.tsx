@@ -63,10 +63,6 @@ export function ProductDetailPage({
   const product: any = products.find((p) => p.id.toString() === productId) || 
                        products.find((p) => p.options && p.options.some((o: any) => o.id.toString() === productId));
 
-  // Debug logs
-  console.log("URL param id:", productId);
-  console.log("Querying products with:", Number(productId));
-  console.log("Product returned:", product?.id, product?.name);
 
   const [selectedOption, setSelectedOption] = useState<any>(null);
 

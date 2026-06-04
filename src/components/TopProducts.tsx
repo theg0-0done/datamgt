@@ -13,7 +13,6 @@ export function TopProducts({
 }: {
   onProductClick: (id: string) => void;
   onAddToCart: (product: any, e: React.MouseEvent) => void;
-  searchQuery: string;
   onBuyNow: (product: any, e: React.MouseEvent) => void;
 }) {
   const { topProducts, loading } = useTopProducts();
@@ -74,7 +73,7 @@ export function TopProducts({
             className="group cursor-pointer flex flex-col rounded-[16px] border border-m-border overflow-hidden hover:shadow-xl transition-all duration-300 relative"
           >
             {product.badge && (
-              <span className="absolute top-[15px] left-[15px] z-10 bg-m-red/20 font-bold text-m-red px-[10px] py-[4px] rounded-full text-[10px] font-bold tracking-wider uppercase tracking-tight shadow-sm">
+              <span className="absolute top-[15px] left-[15px] z-10 bg-m-red/20 font-bold text-m-red px-[10px] py-[4px] rounded-full text-[10px] tracking-widest uppercase shadow-sm">
                 {product.badge}
               </span>
             )}

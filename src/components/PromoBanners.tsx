@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fadeInUp, staggerContainer } from "../utils/animationUtils";
 import { useLanguage } from "../i18n/LanguageContext";
 
-export function PromoBanners({ onBuyNow }: { onBuyNow?: (product: any, e: React.MouseEvent) => void }) {
+export function PromoBanners() {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
 
